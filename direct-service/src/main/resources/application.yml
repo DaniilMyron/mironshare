@@ -4,3 +4,9 @@ server:
 spring:
   application:
     name: direct-service
+
+  data:
+    mongodb:
+      username: miron
+      password: miron
+      uri: mongodb://localhost:27017/direct

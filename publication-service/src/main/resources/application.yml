@@ -1,3 +1,12 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: publication-service
+
+  data:
+    mongodb:
+      username: miron
+      password: miron
+      uri: mongodb://localhost:27017/publication
