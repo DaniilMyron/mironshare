@@ -6,10 +6,10 @@ import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.UUID;
 
-public interface ChatBasicService {
-    Chat createChat(Chat chat);
-    Chat addMessage(Message message, UUID chatId);
-    Chat clearChat(UUID chatId);
-    Chat deleteMessage(Message message, UUID chatId);
-    Chat redactMessage(Message message, UUID chatId);
+public interface ChatBasicService<T extends Chat> {
+    T createChat(T chat);
+    T addMessage(Message message, UUID chatId);
+    T clearChat(UUID chatId);
+    T deleteMessage(Message message, UUID chatId);
+    T redactMessage(Message message, UUID chatId);
 }

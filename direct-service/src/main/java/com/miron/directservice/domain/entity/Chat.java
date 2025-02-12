@@ -7,10 +7,10 @@ import com.miron.directservice.domain.valueObject.Message;
 import java.util.List;
 import java.util.UUID;
 
-public class Chat {
+public abstract class Chat implements ChatBasicLogic{
     private ChatId id;
     private ChatName name;
-    private List<Message> messages;
+    protected List<Message> messages;
 
     public Chat(ChatName name, List<Message> messages) {
         this.id = new ChatId();
@@ -18,25 +18,13 @@ public class Chat {
         this.messages = messages;
     }
 
-    public Chat addMessage(Message message) {
-        messages.add(message);
-        return this;
-    }
+    public abstract Chat addMessage(Message message);
 
-    public Chat clearChat(){
-        messages.clear();
-        return this;
-    }
+    public abstract PersonalChat clearChat();
 
-    public Chat deleteMessage(Message message) {
-        messages.remove(message);
-        return this;
-    }
+    public abstract PersonalChat deleteMessage(Message message);
 
-    public Chat redactMessage(Message message) {
-        messages.set(messages.indexOf(message), message);
-        return this;
-    }
+    public abstract PersonalChat redactMessage(Message message);
 
     public UUID getId() {
         return id.getValue();

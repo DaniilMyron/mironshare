@@ -5,9 +5,9 @@ import com.miron.directservice.domain.entity.Chat;
 import java.util.List;
 import java.util.UUID;
 
-public interface ChatRepository {
-    Chat save(Chat chat);
-    Chat findById(UUID id);
-    List<Chat> findAll();
+public interface ChatRepository<T extends Chat> {
+    T save(T chat);
+    T findById(UUID id);
+    List<T> findAll();
     void deleteById(UUID id);
 }

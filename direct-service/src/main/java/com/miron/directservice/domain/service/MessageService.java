@@ -2,7 +2,6 @@ package com.miron.directservice.domain.service;
 
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
-import com.miron.directservice.domain.valueObject.ChatId;
 import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class MessageService implements MessageBasicService{
 
     @Override
     public void deleteMessage(Message message) {
-        messageRepository.deleteById(message.getMessageId());
+        messageRepository.deleteById(message.getId());
     }
 
     @Override

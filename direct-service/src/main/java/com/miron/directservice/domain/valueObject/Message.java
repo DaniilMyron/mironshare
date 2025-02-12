@@ -25,7 +25,7 @@ public class Message implements ValueObject<String> {
         return this.text;
     }
 
-    public UUID getMessageId() {
+    public UUID getId() {
         return messageId.getValue();
     }
 

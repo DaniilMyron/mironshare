@@ -4,6 +4,8 @@ import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.random.RandomGenerator;
 
 public class RandomMessagesCreation {
     public static List<Message> createRandomMessages(int numberOfMessages) {
@@ -22,7 +24,7 @@ public class RandomMessagesCreation {
     private static String createRandomString(int length) {
         char[] chars = new char[length];
         for (int i = 0; i < length; i++) {
-            chars[i] = (char) (Math.random() % 57 + 65);
+            chars[i] = (char) (Random.from(RandomGenerator.getDefault()).nextInt(65, 122));
         }
         return new String(chars);
     }

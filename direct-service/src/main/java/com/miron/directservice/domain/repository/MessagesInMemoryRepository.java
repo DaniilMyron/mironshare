@@ -18,7 +18,8 @@ public class MessagesInMemoryRepository implements MessageRepository {
 
     @Override
     public Message save(Message message) {
-        return messages.put(message.getMessageId(), message);
+        messages.put(message.getId(), message);
+        return messages.get(message.getId());
     }
 
     @Override
@@ -49,7 +50,7 @@ public class MessagesInMemoryRepository implements MessageRepository {
     public void deleteAllByChatId(UUID chatId) {
         var chat = chatRepository.findById(chatId);
         for (Message message : chat.getMessages()) {
-            messages.remove(message.getMessageId());
+            messages.remove(message.getId());
         }
     }
 }
