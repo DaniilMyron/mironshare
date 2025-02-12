@@ -1,11 +1,11 @@
 package com.miron.directservice.domain;
 
 import com.miron.directservice.domain.api.ChatBasicService;
-import com.miron.directservice.domain.entity.Chat;
+import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
-import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
+import com.miron.directservice.domain.repository.BasicChatInMemoryRepository;
 import com.miron.directservice.domain.repository.MessagesInMemoryRepository;
-import com.miron.directservice.domain.service.PersonalChatService;
+import com.miron.directservice.domain.service.BasicChatCommandsService;
 import com.miron.directservice.domain.service.MessageBasicService;
 import com.miron.directservice.domain.service.MessageService;
 import com.miron.directservice.domain.spi.ChatRepository;
@@ -23,29 +23,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ChatBasicOperationsTest {
     List<Message> messages = new ArrayList<>();
-    ChatBasicService<PersonalChat> chatBasicService;
-    MessageBasicService messageBasicService;
-    ChatRepository<PersonalChat> chatRepository = new PersonalChatInMemoryRepository();
-    MessageRepository messageRepository = new MessagesInMemoryRepository(chatRepository);
+    ChatBasicService<PersonalChat> personalChatBasicService;
+    MessageBasicService chatMessageBasicService;
+    ChatRepository<PersonalChat> personalChatRepository = new BasicChatInMemoryRepository<>();
+
+    ChatBasicService<GroupChat> groupChatBasicService;
+    ChatRepository<GroupChat> groupChatRepository = new BasicChatInMemoryRepository<>();
+    MessageRepository messageRepository = new MessagesInMemoryRepository<>(personalChatRepository);
+
+    PersonalChat personalChat;
+    GroupChat groupChat;
+
     @BeforeEach
     public void setUp() {
         messages = RandomMessagesCreation.createRandomMessages(10);
-        messageBasicService = new MessageService(messageRepository);
-        chatBasicService = new PersonalChatService(chatRepository, messageBasicService);
+        chatMessageBasicService = new MessageService(messageRepository);
+        personalChatBasicService = new BasicChatCommandsService<>(personalChatRepository, chatMessageBasicService);
+        groupChatBasicService = new BasicChatCommandsService<>(groupChatRepository, chatMessageBasicService);
+
+        personalChat = new PersonalChat(
+                new ChatName("ChatName"),
+                new ArrayList<>(),
+                new User(1, "danya", "", ""),
+                new User(2, "danya", "", "")
+        );
+        groupChat = new GroupChat(
+                new ChatName("ChatName"),
+                new ArrayList<>()
+        );
+        groupChatBasicService.createChat(groupChat);
+        personalChatBasicService.createChat(personalChat);
     }
 
     @Test
-    public void test() {
-        PersonalChat chat = new PersonalChat(
-                new ChatName("ChatName"),
-                new ArrayList<>(),
-                new User("danya", "", ""),
-                new User("danya", "", "")
-        );
-        chatBasicService.createChat(chat);
-        var chatWithMessage = chatBasicService.addMessage(messages.getFirst(), chat.getId());
-        System.out.println(chatWithMessage.getMessages().getFirst().getValue());
-        assertThat(chat).isEqualTo(chatWithMessage);
-        assertThat(chat).isEqualTo(chatRepository.findById(chat.getId()));
+    public void testDeletingFunctionality() {
+        personalChatBasicService.addMessage(messages.get(0), personalChat.getId());
+        groupChatBasicService.addMessage(messages.get(1), groupChat.getId());
+
+        assertThat(groupChatBasicService.deleteMessage(messages.get(0), groupChat.getId())).isEqualTo(null); //deleting message from another chat
+
+        groupChatBasicService.deleteMessage(messages.get(1), groupChat.getId());
+        assertThat(groupChat.getMessages()).isEmpty();
     }
 }

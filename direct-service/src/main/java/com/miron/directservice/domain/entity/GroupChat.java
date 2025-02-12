@@ -12,22 +12,26 @@ public class GroupChat extends Chat {
     }
 
     @Override
-    public Chat addMessage(Message message) {
-        return null;
+    public GroupChat addMessage(Message message) {
+        messages.add(message);
+        return this;
     }
 
     @Override
-    public PersonalChat clearChat() {
-        return null;
+    public GroupChat clearChat() {
+        messages.clear();
+        return this;
     }
 
     @Override
-    public PersonalChat deleteMessage(Message message) {
-        return null;
+    public GroupChat deleteMessage(Message message) {
+        messages.remove(message);
+        return this;
     }
 
     @Override
-    public PersonalChat redactMessage(Message message) {
-        return null;
+    public GroupChat redactMessage(Message message) {
+        messages.set(messages.indexOf(message), message);
+        return this;
     }
 }

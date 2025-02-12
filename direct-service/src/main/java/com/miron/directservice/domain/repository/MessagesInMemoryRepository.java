@@ -1,5 +1,6 @@
 package com.miron.directservice.domain.repository;
 
+import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.valueObject.ChatId;
@@ -7,12 +8,12 @@ import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.*;
 
-public class MessagesInMemoryRepository implements MessageRepository {
-    private final ChatRepository chatRepository;
+public class MessagesInMemoryRepository<T extends Chat> implements MessageRepository {
+    private final ChatRepository<T> chatRepository;
 
     private final Map<UUID, Message> messages = new HashMap<>();
 
-    public MessagesInMemoryRepository(ChatRepository chatRepository) {
+    public MessagesInMemoryRepository(ChatRepository<T> chatRepository) {
         this.chatRepository = chatRepository;
     }
 

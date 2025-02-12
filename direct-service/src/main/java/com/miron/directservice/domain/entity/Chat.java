@@ -20,11 +20,11 @@ public abstract class Chat implements ChatBasicLogic{
 
     public abstract Chat addMessage(Message message);
 
-    public abstract PersonalChat clearChat();
+    public abstract Chat clearChat();
 
-    public abstract PersonalChat deleteMessage(Message message);
+    public abstract Chat deleteMessage(Message message);
 
-    public abstract PersonalChat redactMessage(Message message);
+    public abstract Chat redactMessage(Message message);
 
     public UUID getId() {
         return id.getValue();
