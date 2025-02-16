@@ -1,6 +1,5 @@
 package com.miron.directservice.domain.service;
 
-import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.valueObject.Message;

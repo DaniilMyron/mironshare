@@ -2,9 +2,11 @@ package com.miron.directservice.domain.repository;
 
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.ChatRepository;
+import com.miron.directservice.domain.springAnnotations.DomainRepository;
 
 import java.util.*;
 
+@DomainRepository
 public class BasicChatInMemoryRepository<T extends Chat> implements ChatRepository<T> {
     private final Map<UUID, T> chats = new HashMap<>();
 

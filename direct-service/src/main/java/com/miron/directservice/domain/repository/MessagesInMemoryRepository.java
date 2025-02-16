@@ -3,11 +3,13 @@ package com.miron.directservice.domain.repository;
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
+import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.ChatId;
 import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.*;
 
+@DomainRepository
 public class MessagesInMemoryRepository<T extends Chat> implements MessageRepository {
     private final ChatRepository<T> chatRepository;
 

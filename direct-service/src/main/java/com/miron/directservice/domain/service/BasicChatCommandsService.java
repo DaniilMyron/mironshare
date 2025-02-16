@@ -6,6 +6,7 @@ import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.valueObject.Message;
 
+import java.util.List;
 import java.util.UUID;
 
 @DomainService
@@ -52,5 +53,10 @@ public class BasicChatCommandsService<T extends Chat> implements ChatBasicServic
         var chat = chatRepository.findById(chatId);
         var redactedMessage = messageService.redactMessage(message);
         return chatRepository.save((T) chat.redactMessage(redactedMessage));
+    }
+
+    @Override
+    public List<T> getAllChats() {
+        return chatRepository.findAll();
     }
 }
