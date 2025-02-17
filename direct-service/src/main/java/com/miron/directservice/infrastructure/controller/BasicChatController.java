@@ -3,13 +3,10 @@ package com.miron.directservice.infrastructure.controller;
 import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
-import com.miron.directservice.domain.springAnnotations.DomainQualifier;
-import com.miron.directservice.domain.usecases.PersonalChatUseCase;
 import com.miron.directservice.domain.usecases.RetrieveChat;
 import com.miron.directservice.infrastructure.controller.model.MessagesResponse;
 import com.miron.directservice.infrastructure.controller.model.ChatResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +24,9 @@ import java.util.UUID;
 public class BasicChatController {
     private final ChatBasicService<GroupChat> groupBasicChatCommandsService;
     private final ChatBasicService<PersonalChat> personalBasicChatCommandsService;
-    @DomainQualifier("retrieveAnyChat")
     private final RetrieveChat retrieveChatCommand;
 
-    public BasicChatController(ChatBasicService<GroupChat> groupBasicChatCommandsService, ChatBasicService<PersonalChat> personalBasicChatCommandsService, RetrieveChat retrieveChatCommand) {
+    public BasicChatController(ChatBasicService<GroupChat> groupBasicChatCommandsService, ChatBasicService<PersonalChat> personalBasicChatCommandsService,@Qualifier("retrieveAnyChat") RetrieveChat retrieveChatCommand) {
         this.personalBasicChatCommandsService = personalBasicChatCommandsService;
         this.groupBasicChatCommandsService = groupBasicChatCommandsService;
         this.retrieveChatCommand = retrieveChatCommand;
@@ -49,7 +45,6 @@ public class BasicChatController {
         var responseList = new ArrayList<ChatResponse>();
         responseList.addAll(personalChatResponse);
         responseList.addAll(groupChatResponse);
-        System.out.println(responseList);
         return ResponseEntity.ok().body(responseList);
     }
 

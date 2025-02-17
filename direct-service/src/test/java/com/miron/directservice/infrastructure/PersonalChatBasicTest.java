@@ -7,6 +7,7 @@ import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
+import com.miron.directservice.domain.valueObject.Message;
 import com.miron.directservice.domain.valueObject.User;
 import com.miron.directservice.infrastructure.config.DomainConfiguration;
 import com.miron.directservice.infrastructure.controller.BasicChatController;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,14 +42,14 @@ public class PersonalChatBasicTest {
     void setUp() {
         PersonalChat personalChat = new PersonalChat(
                 new ChatName("ChatName"),
-                new ArrayList<>(),
                 new User(1, "danya", "", ""),
                 new User(2, "danya", "", "")
         );
+        personalChat.addMessage(new Message("firstMessage", 1));
+        personalChat.addMessage(new Message("secondMessage", 2));
         chatRepository.save(personalChat);
         personalChat = new PersonalChat(
                 new ChatName("NewChatName"),
-                new ArrayList<>(),
                 new User(1, "danya", "", ""),
                 new User(2, "danya", "", "")
         );
@@ -61,13 +63,20 @@ public class PersonalChatBasicTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+        System.out.println(chatRepository.findAll());
         System.out.println(mock.getResponse().getContentAsString());
     }
 
     @Test
     void getChatById() throws Exception {
         var mock = mockMvc.perform(
-                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getFirst()))
+                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+        mock = mockMvc.perform(
+                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getLast().getId()))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();

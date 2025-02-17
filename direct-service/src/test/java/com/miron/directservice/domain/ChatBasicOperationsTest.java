@@ -45,13 +45,11 @@ public class ChatBasicOperationsTest {
 
         personalChat = new PersonalChat(
                 new ChatName("ChatName"),
-                new ArrayList<>(),
                 new User(1, "danya", "", ""),
                 new User(2, "danya", "", "")
         );
         groupChat = new GroupChat(
-                new ChatName("ChatName"),
-                new ArrayList<>()
+                new ChatName("ChatName")
         );
         groupChatBasicService.createChat(groupChat);
         personalChatBasicService.createChat(personalChat);

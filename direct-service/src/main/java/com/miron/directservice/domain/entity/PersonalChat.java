@@ -4,20 +4,22 @@ import com.miron.directservice.domain.valueObject.ChatName;
 import com.miron.directservice.domain.valueObject.Message;
 import com.miron.directservice.domain.valueObject.User;
 
-import java.util.List;
 
 public class PersonalChat extends Chat{
     private User sender;
     private User receiver;
 
-    public PersonalChat(ChatName name, List<Message> messages, User sender, User receiver) {
-        super(name, messages);
+    public PersonalChat(ChatName name, User sender, User receiver) {
+        super(name);
         this.sender = sender;
         this.receiver = receiver;
     }
 
     @Override
     public PersonalChat addMessage(Message message) {
+        if(message.getSenderId() != sender.getValue() && message.getSenderId() != receiver.getValue()){
+            throw new RuntimeException("You are not the part of chat");
+        }
         messages.add(message);
         return this;
     }

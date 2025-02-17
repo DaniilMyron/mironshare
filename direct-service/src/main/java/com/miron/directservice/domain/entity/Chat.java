@@ -4,6 +4,7 @@ import com.miron.directservice.domain.valueObject.ChatId;
 import com.miron.directservice.domain.valueObject.ChatName;
 import com.miron.directservice.domain.valueObject.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,10 +13,10 @@ public abstract class Chat implements ChatBasicLogic{
     private ChatName name;
     protected List<Message> messages;
 
-    public Chat(ChatName name, List<Message> messages) {
+    public Chat(ChatName name) {
         this.id = new ChatId();
         this.name = name;
-        this.messages = messages;
+        this.messages = new ArrayList<>();
     }
 
     public abstract Chat addMessage(Message message);
