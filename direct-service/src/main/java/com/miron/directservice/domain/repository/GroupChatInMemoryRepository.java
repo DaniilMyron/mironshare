@@ -1,28 +1,26 @@
 package com.miron.directservice.domain.repository;
 
-import com.miron.directservice.domain.entity.Chat;
+import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.spi.ChatRepository;
-import com.miron.directservice.domain.springAnnotations.DomainRepository;
 
 import java.util.*;
 
-@DomainRepository
-public class BasicChatInMemoryRepository<T extends Chat> implements ChatRepository<T> {
-    private final Map<UUID, T> chats = new HashMap<>();
+public class GroupChatInMemoryRepository implements ChatRepository<GroupChat> {
+    private final Map<UUID, GroupChat> chats = new HashMap<>();
 
     @Override
-    public T save(T chat) {
+    public GroupChat save(GroupChat chat) {
         chats.put(chat.getId(), chat);
         return chats.get(chat.getId());
     }
 
     @Override
-    public T findById(UUID id) {
+    public GroupChat findById(UUID id) {
         return chats.get(id);
     }
 
     @Override
-    public List<T> findAll() {
+    public List<GroupChat> findAll() {
         return new ArrayList<>(chats.values());
     }
 

@@ -3,11 +3,13 @@ package com.miron.directservice.domain;
 import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
-import com.miron.directservice.domain.repository.BasicChatInMemoryRepository;
+import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
 import com.miron.directservice.domain.repository.MessagesInMemoryRepository;
-import com.miron.directservice.domain.service.BasicChatCommandsService;
+import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
+import com.miron.directservice.domain.service.GroupChatBasicService;
 import com.miron.directservice.domain.service.MessageBasicService;
 import com.miron.directservice.domain.service.MessageService;
+import com.miron.directservice.domain.service.PersonalChatBasicService;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
@@ -25,11 +27,11 @@ public class ChatBasicOperationsTest {
     List<Message> messages = new ArrayList<>();
     ChatBasicService<PersonalChat> personalChatBasicService;
     MessageBasicService chatMessageBasicService;
-    ChatRepository<PersonalChat> personalChatRepository = new BasicChatInMemoryRepository<>();
+    ChatRepository<PersonalChat> personalChatRepository = new PersonalChatInMemoryRepository();
 
     ChatBasicService<GroupChat> groupChatBasicService;
-    ChatRepository<GroupChat> groupChatRepository = new BasicChatInMemoryRepository<>();
-    MessageRepository messageRepository = new MessagesInMemoryRepository<>(personalChatRepository);
+    ChatRepository<GroupChat> groupChatRepository = new GroupChatInMemoryRepository();
+    MessageRepository messageRepository = new MessagesInMemoryRepository();
 
     PersonalChat personalChat;
     GroupChat groupChat;
@@ -38,8 +40,8 @@ public class ChatBasicOperationsTest {
     public void setUp() {
         messages = RandomMessagesCreation.createRandomMessages(10);
         chatMessageBasicService = new MessageService(messageRepository);
-        personalChatBasicService = new BasicChatCommandsService<>(personalChatRepository, chatMessageBasicService);
-        groupChatBasicService = new BasicChatCommandsService<>(groupChatRepository, chatMessageBasicService);
+        personalChatBasicService = new PersonalChatBasicService(personalChatRepository, chatMessageBasicService);
+        groupChatBasicService = new GroupChatBasicService(groupChatRepository, chatMessageBasicService);
 
         personalChat = new PersonalChat(
                 new ChatName("ChatName"),

@@ -1,6 +1,6 @@
 package com.miron.directservice.domain.spi;
 
-import com.miron.directservice.domain.valueObject.ChatId;
+import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.List;
@@ -12,5 +12,5 @@ public interface MessageRepository {
     Message findBySenderId(int senderId);
     List<Message> findAll();
     void deleteById(UUID id);
-    void deleteAllByChatId(UUID chatId);
+    void deleteAllChatMessages(Chat chat);
 }

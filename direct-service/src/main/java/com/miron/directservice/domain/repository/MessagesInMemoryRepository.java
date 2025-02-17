@@ -1,23 +1,15 @@
 package com.miron.directservice.domain.repository;
 
 import com.miron.directservice.domain.entity.Chat;
-import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
-import com.miron.directservice.domain.valueObject.ChatId;
 import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.*;
 
 @DomainRepository
-public class MessagesInMemoryRepository<T extends Chat> implements MessageRepository {
-    private final ChatRepository<T> chatRepository;
-
+public class MessagesInMemoryRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
-
-    public MessagesInMemoryRepository(ChatRepository<T> chatRepository) {
-        this.chatRepository = chatRepository;
-    }
 
     @Override
     public Message save(Message message) {
@@ -50,8 +42,7 @@ public class MessagesInMemoryRepository<T extends Chat> implements MessageReposi
     }
 
     @Override
-    public void deleteAllByChatId(UUID chatId) {
-        var chat = chatRepository.findById(chatId);
+    public void deleteAllChatMessages(Chat chat) {
         for (Message message : chat.getMessages()) {
             messages.remove(message.getId());
         }

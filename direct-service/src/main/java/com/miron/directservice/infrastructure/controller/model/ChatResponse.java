@@ -4,8 +4,8 @@ import com.miron.directservice.domain.entity.Chat;
 
 import java.util.UUID;
 
-public record PersonalChatResponse(UUID id, String name) {
-    public PersonalChatResponse(Chat chat){
+public record ChatResponse(UUID id, String name) {
+    public ChatResponse(Chat chat){
         this(chat.getId(), chat.getName());
     }
 }
