@@ -59,4 +59,9 @@ public class GroupChatBasicService implements ChatBasicService<GroupChat> {
     public List<GroupChat> getAllChats() {
         return chatRepository.findAll();
     }
+
+    @Override
+    public GroupChat getChatById(UUID chatId) {
+        return chatRepository.findById(chatId);
+    }
 }

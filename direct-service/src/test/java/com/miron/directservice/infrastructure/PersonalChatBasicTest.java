@@ -67,7 +67,6 @@ public class PersonalChatBasicTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        System.out.println(chatRepository.findAll());
         System.out.println(mock.getResponse().getContentAsString());
     }
 

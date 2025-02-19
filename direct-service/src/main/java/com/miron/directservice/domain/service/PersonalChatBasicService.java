@@ -59,4 +59,9 @@ public class PersonalChatBasicService implements ChatBasicService<PersonalChat> 
     public List<PersonalChat> getAllChats() {
         return chatRepository.findAll();
     }
+
+    @Override
+    public PersonalChat getChatById(UUID chatId) {
+        return chatRepository.findById(chatId);
+    }
 }

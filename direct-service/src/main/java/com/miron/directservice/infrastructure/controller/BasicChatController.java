@@ -1,10 +1,11 @@
 package com.miron.directservice.infrastructure.controller;
 
 import com.miron.directservice.domain.api.ChatBasicService;
+import com.miron.directservice.domain.api.RetrieveChats;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
-import com.miron.directservice.domain.usecases.sendMessage.SendMessage;
-import com.miron.directservice.domain.usecases.retrieveChat.RetrieveChat;
+import com.miron.directservice.domain.api.SendMessage;
+import com.miron.directservice.domain.api.RetrieveChat;
 import com.miron.directservice.domain.valueObject.Message;
 import com.miron.directservice.infrastructure.controller.model.MessageRequest;
 import com.miron.directservice.infrastructure.controller.model.MessagesResponse;
@@ -23,32 +24,23 @@ import java.util.UUID;
 @RequestMapping("api/v1/direct")
 public class BasicChatController {
     private final int SENDER_ID = 1;
-    private final ChatBasicService<GroupChat> groupBasicChatCommandsService;
-    private final ChatBasicService<PersonalChat> personalBasicChatCommandsService;
+    private final RetrieveChats retrieveChatsCommand;
     private final RetrieveChat retrieveChatCommand;
     private final SendMessage sendMessageCommand;
 
-    public BasicChatController(ChatBasicService<GroupChat> groupBasicChatCommandsService, ChatBasicService<PersonalChat> personalBasicChatCommandsService, @Qualifier("retrieveAnyChat") RetrieveChat retrieveChatCommand, SendMessage sendMessageCommand) {
-        this.personalBasicChatCommandsService = personalBasicChatCommandsService;
-        this.groupBasicChatCommandsService = groupBasicChatCommandsService;
+    public BasicChatController(RetrieveChats retrieveChatsCommand, @Qualifier("retrieveAnyChat") RetrieveChat retrieveChatCommand, SendMessage sendMessageCommand) {
+        this.retrieveChatsCommand = retrieveChatsCommand;
         this.retrieveChatCommand = retrieveChatCommand;
         this.sendMessageCommand = sendMessageCommand;
     }
 
     @GetMapping
     public ResponseEntity<List<ChatResponse>> getChatsList() {
-        var groupChatResponse = new ArrayList<>(groupBasicChatCommandsService.getAllChats()
+        var response = retrieveChatsCommand.retrieveAllChats()
                 .stream()
                 .map(ChatResponse::new)
-                .toList());
-        var personalChatResponse = new ArrayList<>(personalBasicChatCommandsService.getAllChats()
-                .stream()
-                .map(ChatResponse::new)
-                .toList());
-        var responseList = new ArrayList<ChatResponse>();
-        responseList.addAll(personalChatResponse);
-        responseList.addAll(groupChatResponse);
-        return ResponseEntity.ok().body(responseList);
+                .toList();
+        return ResponseEntity.ok().body(response);
     }
 
     //OR MAKE IT IN SERVICE: response = service1.retrieve() != null ? service1.retrieve() : service2.retrieve()

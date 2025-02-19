@@ -1,10 +1,11 @@
 package com.miron.directservice.domain.usecases.retrieveChat;
 
+import com.miron.directservice.domain.api.RetrieveChat;
 import com.miron.directservice.domain.entity.Chat;
 
 import java.util.UUID;
 
-public class RetrieveAnyChatUseCase implements RetrieveChat{
+public class RetrieveAnyChatUseCase implements RetrieveChat {
     private final RetrieveChat retrievePersonalChat;
     private final RetrieveChat retrieveGroupChat;
 

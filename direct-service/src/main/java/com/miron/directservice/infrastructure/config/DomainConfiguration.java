@@ -2,8 +2,11 @@ package com.miron.directservice.infrastructure.config;
 
 import com.miron.directservice.domain.BasePackageClassesSkanMarker;
 import com.miron.directservice.domain.api.ChatBasicService;
+import com.miron.directservice.domain.api.RetrieveChats;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
+import com.miron.directservice.domain.fatory.ServicesFactory;
+import com.miron.directservice.domain.fatory.ServicesFactoryImpl;
 import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
 import com.miron.directservice.domain.repository.MessagesInMemoryRepository;
 import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
@@ -12,12 +15,13 @@ import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.springAnnotations.DomainUseCase;
-import com.miron.directservice.domain.usecases.sendMessage.SendMessage;
+import com.miron.directservice.domain.api.SendMessage;
+import com.miron.directservice.domain.usecases.retrieveChats.RetrieveAllChatsUseCase;
 import com.miron.directservice.domain.usecases.sendMessage.SendMessageUseCase;
 import com.miron.directservice.domain.usecases.retrieveChat.GroupChatUseCase;
 import com.miron.directservice.domain.usecases.retrieveChat.PersonalChatUseCase;
 import com.miron.directservice.domain.usecases.retrieveChat.RetrieveAnyChatUseCase;
-import com.miron.directservice.domain.usecases.retrieveChat.RetrieveChat;
+import com.miron.directservice.domain.api.RetrieveChat;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 
@@ -43,6 +47,16 @@ public class DomainConfiguration {
     }
 
     @Bean
+    public ServicesFactory servicesFactory(ChatBasicService<PersonalChat> personalChat, ChatBasicService<GroupChat> groupChat){
+        return new ServicesFactoryImpl(personalChat, groupChat);
+    }
+
+    @Bean
+    public RetrieveChats retrieveChatsCommand(ServicesFactory servicesFactory){
+        return new RetrieveAllChatsUseCase(servicesFactory);
+    }
+
+    @Bean
     @Qualifier("retrieveAnyChat")
     public RetrieveChat retrieveAnyChat(ChatRepository<PersonalChat> personalChatRepository, ChatRepository<GroupChat> groupChatChatRepository) {
         return new RetrieveAnyChatUseCase(retrievePersonalChat(personalChatRepository), retrieveGroupChat(groupChatChatRepository));
@@ -61,7 +75,7 @@ public class DomainConfiguration {
     }
 
     @Bean
-    public SendMessage sendMessage(ChatBasicService<PersonalChat> personalChat, ChatBasicService<GroupChat> groupChat) {
-        return new SendMessageUseCase(personalChat, groupChat);
+    public SendMessage sendMessage(ServicesFactory servicesFactory) {
+        return new SendMessageUseCase(servicesFactory);
     }
 }

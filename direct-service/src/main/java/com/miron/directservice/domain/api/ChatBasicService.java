@@ -13,4 +13,5 @@ public interface ChatBasicService<T extends Chat> {
     T deleteMessage(Message message, UUID chatId);
     T redactMessage(Message message, UUID chatId);
     List<T> getAllChats();
+    T getChatById(UUID chatId);
 }

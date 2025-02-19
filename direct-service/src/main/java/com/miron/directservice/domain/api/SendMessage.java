@@ -1,4 +1,4 @@
-package com.miron.directservice.domain.usecases.sendMessage;
+package com.miron.directservice.domain.api;
 
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.valueObject.Message;
