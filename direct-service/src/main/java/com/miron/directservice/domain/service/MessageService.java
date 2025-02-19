@@ -5,7 +5,6 @@ import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.valueObject.Message;
 
-import java.util.UUID;
 
 @DomainService
 public class MessageService implements MessageBasicService{

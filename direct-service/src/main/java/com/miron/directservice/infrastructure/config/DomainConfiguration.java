@@ -1,19 +1,23 @@
 package com.miron.directservice.infrastructure.config;
 
 import com.miron.directservice.domain.BasePackageClassesSkanMarker;
+import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
 import com.miron.directservice.domain.repository.MessagesInMemoryRepository;
 import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
 import com.miron.directservice.domain.spi.ChatRepository;
+import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.springAnnotations.DomainUseCase;
-import com.miron.directservice.domain.usecases.GroupChatUseCase;
-import com.miron.directservice.domain.usecases.PersonalChatUseCase;
-import com.miron.directservice.domain.usecases.RetrieveAnyChatUseCase;
-import com.miron.directservice.domain.usecases.RetrieveChat;
+import com.miron.directservice.domain.usecases.sendMessage.SendMessage;
+import com.miron.directservice.domain.usecases.sendMessage.SendMessageUseCase;
+import com.miron.directservice.domain.usecases.retrieveChat.GroupChatUseCase;
+import com.miron.directservice.domain.usecases.retrieveChat.PersonalChatUseCase;
+import com.miron.directservice.domain.usecases.retrieveChat.RetrieveAnyChatUseCase;
+import com.miron.directservice.domain.usecases.retrieveChat.RetrieveChat;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 
@@ -23,6 +27,11 @@ import org.springframework.context.annotation.*;
         includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {DomainService.class, DomainRepository.class, DomainUseCase.class})},
         excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {MessagesInMemoryRepository.class, GroupChatInMemoryRepository.class})})
 public class DomainConfiguration {
+    @Bean
+    public MessageRepository messageRepository() {
+        return new MessagesInMemoryRepository();
+    }
+
     @Bean
     public ChatRepository<PersonalChat> personalChatInMemoryRepository() {
         return new PersonalChatInMemoryRepository();
@@ -49,5 +58,10 @@ public class DomainConfiguration {
     @Qualifier("retrieveGroupChat")
     public RetrieveChat retrieveGroupChat(ChatRepository<GroupChat> groupChatChatRepository) {
         return new GroupChatUseCase(groupChatChatRepository);
+    }
+
+    @Bean
+    public SendMessage sendMessage(ChatBasicService<PersonalChat> personalChat, ChatBasicService<GroupChat> groupChat) {
+        return new SendMessageUseCase(personalChat, groupChat);
     }
 }

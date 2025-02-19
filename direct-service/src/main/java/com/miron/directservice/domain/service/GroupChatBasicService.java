@@ -2,7 +2,6 @@ package com.miron.directservice.domain.service;
 
 import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.GroupChat;
-import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.valueObject.Message;

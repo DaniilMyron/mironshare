@@ -2,12 +2,10 @@ package com.miron.directservice.domain.repository;
 
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.MessageRepository;
-import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.Message;
 
 import java.util.*;
 
-@DomainRepository
 public class MessagesInMemoryRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
 
