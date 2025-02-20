@@ -1,9 +1,9 @@
 package com.miron.directservice.infrastructure;
 
-import com.miron.directservice.domain.entity.GroupChat;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
-import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
@@ -11,7 +11,7 @@ import com.miron.directservice.domain.valueObject.Message;
 import com.miron.directservice.domain.valueObject.User;
 import com.miron.directservice.infrastructure.config.DomainConfiguration;
 import com.miron.directservice.infrastructure.controller.BasicChatController;
-import com.miron.directservice.infrastructure.controller.model.MessageRequest;
+import com.miron.directservice.infrastructure.controller.model.MessageIdRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +20,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BasicChatController.class)
@@ -36,6 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PersonalChatBasicTest {
     @Autowired
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private static final String BASE_URL = "/api/v1/direct";
+
+    @Autowired
+    private ChatBasicService<PersonalChat> personalChatBasicService;
 
     @Autowired
     private ChatRepository<PersonalChat> chatRepository;
@@ -47,23 +50,23 @@ public class PersonalChatBasicTest {
                 new User(1, "danya", "", ""),
                 new User(2, "danya", "", "")
         );
-        personalChat.addMessage(new Message("firstMessage firstChat", 1));
-        personalChat.addMessage(new Message("secondMessage firstChat", 2));
-        chatRepository.save(personalChat);
+        personalChatBasicService.createChat(personalChat);
+        personalChatBasicService.addMessage(new Message("firstMessage firstChat", 1), personalChat.getId());
+        personalChatBasicService.addMessage(new Message("secondMessage firstChat", 2), personalChat.getId());
         personalChat = new PersonalChat(
                 new ChatName("NewChatName"),
                 new User(1, "danya", "", ""),
                 new User(2, "danya", "", "")
         );
-        personalChat.addMessage(new Message("firstMessage secondChat", 1));
-        personalChat.addMessage(new Message("secondMessage secondChat", 2));
-        chatRepository.save(personalChat);
+        personalChatBasicService.createChat(personalChat);
+        personalChatBasicService.addMessage(new Message("firstMessage secondChat", 1), personalChat.getId());
+        personalChatBasicService.addMessage(new Message("secondMessage secondChat", 2), personalChat.getId());
     }
 
     @Test
     void getAllChats() throws Exception {
         var mock = mockMvc.perform(
-                        get("/api/v1/direct")
+                        get(BASE_URL)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -73,14 +76,55 @@ public class PersonalChatBasicTest {
     @Test
     void getChatById() throws Exception {
         var mock = mockMvc.perform(
-                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                        get(BASE_URL + "/%s".formatted(chatRepository.findAll().getFirst().getId()))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         System.out.println(mock.getResponse().getContentAsString());
         mock = mockMvc.perform(
-                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getLast().getId()))
+                        get(BASE_URL + "/%s".formatted(chatRepository.findAll().getLast().getId()))
                                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+    }
+
+    @Test
+    void findMessageByChatId() throws Exception {
+        var mock = mockMvc.perform(
+                        get(BASE_URL + "/%s/find-message".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"text\":\"first\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+        mock = mockMvc.perform(
+                        get(BASE_URL + "/%s/find-message".formatted(chatRepository.findAll().getLast().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"text\":\"first\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+    }
+
+    @Test
+    void redactMessageByChatId() throws Exception {
+        var message = chatRepository.findAll().getFirst().getMessages().getFirst();
+        String firstValue = objectMapper.writeValueAsString(new MessageIdRequest(message.getId(), "A new Text for message"));
+        message = chatRepository.findAll().getLast().getMessages().getFirst();
+        String secondValue = objectMapper.writeValueAsString(new MessageIdRequest(message.getId(), "A new Text for message"));
+        var mock = mockMvc.perform(
+                        patch(BASE_URL + "/%s/redact".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(firstValue))
+                .andExpect(status().isOk())
+                .andReturn();
+        //System.out.println(firstValue + " first Value");
+        System.out.println(mock.getResponse().getContentAsString());
+        mock = mockMvc.perform(
+                        patch(BASE_URL + "/%s/redact".formatted(chatRepository.findAll().getLast().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(secondValue))
                 .andExpect(status().isOk())
                 .andReturn();
         System.out.println(mock.getResponse().getContentAsString());
@@ -89,20 +133,57 @@ public class PersonalChatBasicTest {
     @Test
     void sendMessageToChat() throws Exception {
         var mock = mockMvc.perform(
-                        post("/api/v1/direct/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                        post(BASE_URL + "/%s/send".formatted(chatRepository.findAll().getFirst().getId()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"text\":\"Hi!\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
         System.out.println(mock.getResponse().getContentAsString());
         mock = mockMvc.perform(
-                        get("/api/v1/direct/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                        get(BASE_URL + "/%s".formatted(chatRepository.findAll().getFirst().getId()))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         System.out.println(mock.getResponse().getContentAsString());
     }
 
+    @Test
+    void clearChatMessages() throws Exception {
+        var mock = mockMvc.perform(
+                        delete(BASE_URL + "/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.NO_CONTENT.value()))
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+        mock = mockMvc.perform(
+                        delete(BASE_URL + "/%s".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.NO_CONTENT.value()))
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+    }
+
+    @Test
+    void deleteMessageInChat() throws Exception {
+        var message = chatRepository.findAll().getFirst().getMessages().getFirst();
+        String firstValue = objectMapper.writeValueAsString(new MessageIdRequest(message.getId(), "A new Text for message"));
+        message = chatRepository.findAll().getLast().getMessages().getFirst();
+        String secondValue = objectMapper.writeValueAsString(new MessageIdRequest(message.getId(), "A new Text for message"));
+        var mock = mockMvc.perform(
+                        delete(BASE_URL + "/%s/delete".formatted(chatRepository.findAll().getFirst().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(firstValue))
+                .andExpect(status().is(HttpStatus.NO_CONTENT.value()))
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+        mock = mockMvc.perform(
+                        delete(BASE_URL + "/%s/delete".formatted(chatRepository.findAll().getLast().getId()))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(secondValue))
+                .andExpect(status().is(HttpStatus.NO_CONTENT.value()))
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+    }
 
     @TestConfiguration
     @ComponentScan(

@@ -25,10 +25,11 @@ public class GroupChatBasicService implements ChatBasicService<GroupChat> {
     }
 
     @Override
-    public GroupChat addMessage(Message message, UUID chatId) {
+    public Message addMessage(Message message, UUID chatId) {
         var chat = chatRepository.findById(chatId);
         var createdMessage = messageService.createMessage(message);
-        return chatRepository.save(chat.addMessage(createdMessage));
+        chatRepository.save(chat.addMessage(createdMessage));
+        return createdMessage;
     }
 
     @Override
@@ -39,20 +40,22 @@ public class GroupChatBasicService implements ChatBasicService<GroupChat> {
     }
 
     @Override
-    public GroupChat deleteMessage(Message message, UUID chatId) {
+    public Message deleteMessage(Message message, UUID chatId) {
         var chat = chatRepository.findById(chatId);
         if(!chat.getMessages().contains(message)) {
-            return null;
+            throw new RuntimeException("Message is not in chat");
         }
         messageService.deleteMessage(message);
-        return chat.deleteMessage(message);
+        chat.deleteMessage(message);
+        return message;
     }
 
     @Override
-    public GroupChat redactMessage(Message message, UUID chatId) {
+    public Message redactMessage(Message message, UUID chatId) {
         var chat = chatRepository.findById(chatId);
         var redactedMessage = messageService.redactMessage(message);
-        return chatRepository.save(chat.redactMessage(redactedMessage));
+        chatRepository.save(chat.redactMessage(redactedMessage));
+        return redactedMessage;
     }
 
     @Override

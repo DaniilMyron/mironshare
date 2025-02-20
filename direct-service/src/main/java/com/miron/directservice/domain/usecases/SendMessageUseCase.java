@@ -1,6 +1,5 @@
-package com.miron.directservice.domain.usecases.sendMessage;
+package com.miron.directservice.domain.usecases;
 
-import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.api.SendMessage;
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.entity.GroupChat;

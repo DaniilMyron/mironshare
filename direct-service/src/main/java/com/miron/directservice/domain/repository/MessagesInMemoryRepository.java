@@ -11,7 +11,8 @@ public class MessagesInMemoryRepository implements MessageRepository {
 
     @Override
     public Message save(Message message) {
-        messages.put(message.getId(), message);
+        messages.computeIfPresent(message.getId(), (key, value) -> value.setText(message.getValue()));
+        messages.putIfAbsent(message.getId(), message);
         return messages.get(message.getId());
     }
 

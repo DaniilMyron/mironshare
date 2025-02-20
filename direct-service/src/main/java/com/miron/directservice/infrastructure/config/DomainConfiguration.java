@@ -1,8 +1,7 @@
 package com.miron.directservice.infrastructure.config;
 
 import com.miron.directservice.domain.BasePackageClassesSkanMarker;
-import com.miron.directservice.domain.api.ChatBasicService;
-import com.miron.directservice.domain.api.RetrieveChats;
+import com.miron.directservice.domain.api.*;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.fatory.ServicesFactory;
@@ -15,13 +14,7 @@ import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.springAnnotations.DomainUseCase;
-import com.miron.directservice.domain.api.SendMessage;
-import com.miron.directservice.domain.usecases.retrieveChats.RetrieveAllChatsUseCase;
-import com.miron.directservice.domain.usecases.sendMessage.SendMessageUseCase;
-import com.miron.directservice.domain.usecases.retrieveChat.GroupChatUseCase;
-import com.miron.directservice.domain.usecases.retrieveChat.PersonalChatUseCase;
-import com.miron.directservice.domain.usecases.retrieveChat.RetrieveAnyChatUseCase;
-import com.miron.directservice.domain.api.RetrieveChat;
+import com.miron.directservice.domain.usecases.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 
@@ -77,5 +70,15 @@ public class DomainConfiguration {
     @Bean
     public SendMessage sendMessage(ServicesFactory servicesFactory) {
         return new SendMessageUseCase(servicesFactory);
+    }
+
+    @Bean
+    public RedactMessage redactMessage(ServicesFactory servicesFactory) {
+        return new RedactMessageUseCase(servicesFactory);
+    }
+
+    @Bean
+    public DeleteMessage deleteMessage(ServicesFactory servicesFactory){
+        return new DeleteMessageUseCase(servicesFactory);
     }
 }

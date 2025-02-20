@@ -1,4 +1,4 @@
-package com.miron.directservice.domain.usecases.retrieveChat;
+package com.miron.directservice.domain.usecases;
 
 import com.miron.directservice.domain.api.RetrieveChat;
 import com.miron.directservice.domain.entity.Chat;
