@@ -7,7 +7,7 @@ import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 import com.miron.directservice.domain.valueObject.User;
 import com.miron.directservice.infrastructure.config.DomainConfiguration;
 import com.miron.directservice.infrastructure.controller.BasicChatController;

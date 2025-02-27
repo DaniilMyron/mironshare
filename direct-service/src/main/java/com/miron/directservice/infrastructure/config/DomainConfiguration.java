@@ -1,6 +1,5 @@
 package com.miron.directservice.infrastructure.config;
 
-import com.miron.directservice.domain.BasePackageClassesSkanMarker;
 import com.miron.directservice.domain.api.*;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
@@ -9,20 +8,17 @@ import com.miron.directservice.domain.fatory.ServicesFactoryImpl;
 import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
 import com.miron.directservice.domain.repository.MessagesInMemoryRepository;
 import com.miron.directservice.domain.repository.PersonalChatInMemoryRepository;
+import com.miron.directservice.domain.service.GroupChatBasicService;
+import com.miron.directservice.domain.service.MessageBasicService;
+import com.miron.directservice.domain.service.MessageService;
+import com.miron.directservice.domain.service.PersonalChatBasicService;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
-import com.miron.directservice.domain.springAnnotations.DomainRepository;
-import com.miron.directservice.domain.springAnnotations.DomainService;
-import com.miron.directservice.domain.springAnnotations.DomainUseCase;
 import com.miron.directservice.domain.usecases.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 
 @Configuration
-@ComponentScan(
-        basePackageClasses = {BasePackageClassesSkanMarker.class, DomainService.class, MessagesInMemoryRepository.class, GroupChatInMemoryRepository.class},
-        includeFilters = {@ComponentScan.Filter(type = FilterType.ANNOTATION, classes = {DomainService.class, DomainRepository.class, DomainUseCase.class})},
-        excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {MessagesInMemoryRepository.class, GroupChatInMemoryRepository.class})})
 public class DomainConfiguration {
     @Bean
     public MessageRepository messageRepository() {
@@ -37,6 +33,21 @@ public class DomainConfiguration {
     @Bean
     public ChatRepository<GroupChat> groupChatInMemoryRepository() {
         return new GroupChatInMemoryRepository();
+    }
+
+    @Bean
+    public MessageBasicService messageBasicService(MessageRepository messageRepository) {
+        return new MessageService(messageRepository);
+    }
+
+    @Bean
+    public ChatBasicService<PersonalChat> personalChatBasicService(ChatRepository<PersonalChat> personalChatRepository, MessageBasicService messageBasicService) {
+        return new PersonalChatBasicService(personalChatRepository, messageBasicService);
+    }
+
+    @Bean
+    public ChatBasicService<GroupChat> groupChatBasicService(ChatRepository<GroupChat> groupChatRepository, MessageBasicService messageBasicService) {
+        return new GroupChatBasicService(groupChatRepository, messageBasicService);
     }
 
     @Bean

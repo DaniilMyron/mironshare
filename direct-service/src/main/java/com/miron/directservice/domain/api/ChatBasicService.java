@@ -1,7 +1,7 @@
 package com.miron.directservice.domain.api;
 
 import com.miron.directservice.domain.entity.Chat;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 
 import java.util.List;
 import java.util.UUID;

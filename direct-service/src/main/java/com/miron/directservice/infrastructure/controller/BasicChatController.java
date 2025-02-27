@@ -2,7 +2,7 @@ package com.miron.directservice.infrastructure.controller;
 
 import com.miron.directservice.domain.api.*;
 import com.miron.directservice.domain.entity.Chat;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 import com.miron.directservice.infrastructure.controller.model.MessageIdRequest;
 import com.miron.directservice.infrastructure.controller.model.MessageTextRequest;
 import com.miron.directservice.infrastructure.controller.model.MessagesResponse;

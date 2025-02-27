@@ -1,4 +1,7 @@
-package com.miron.directservice.domain.valueObject;
+package com.miron.directservice.domain.entity;
+
+import com.miron.directservice.domain.valueObject.MessageID;
+import com.miron.directservice.domain.valueObject.ValueObject;
 
 import java.util.UUID;
 

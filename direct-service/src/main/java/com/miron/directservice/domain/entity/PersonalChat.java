@@ -1,7 +1,6 @@
 package com.miron.directservice.domain.entity;
 
 import com.miron.directservice.domain.valueObject.ChatName;
-import com.miron.directservice.domain.valueObject.Message;
 import com.miron.directservice.domain.valueObject.User;
 
 

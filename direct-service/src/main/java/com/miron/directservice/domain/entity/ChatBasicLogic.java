@@ -1,7 +1,5 @@
 package com.miron.directservice.domain.entity;
 
-import com.miron.directservice.domain.valueObject.Message;
-
 public interface ChatBasicLogic {
     Chat addMessage(Message message);
     Chat clearChat();

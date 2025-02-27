@@ -13,7 +13,7 @@ import com.miron.directservice.domain.service.PersonalChatBasicService;
 import com.miron.directservice.domain.spi.ChatRepository;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 import com.miron.directservice.domain.valueObject.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

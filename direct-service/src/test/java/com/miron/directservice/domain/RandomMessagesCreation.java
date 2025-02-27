@@ -1,6 +1,6 @@
 package com.miron.directservice.domain;
 
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.entity.GroupChat;
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.fatory.ServicesFactory;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 
 public class RedactMessageUseCase implements RedactMessage {
     private final ServicesFactory servicesFactory;

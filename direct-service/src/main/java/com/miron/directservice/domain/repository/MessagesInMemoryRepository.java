@@ -2,7 +2,7 @@ package com.miron.directservice.domain.repository;
 
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.MessageRepository;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package com.miron.directservice.domain.service;
 
 import com.miron.directservice.domain.entity.Chat;
-import com.miron.directservice.domain.valueObject.Message;
+import com.miron.directservice.domain.entity.Message;
 
 public interface MessageBasicService {
     Message createMessage(Message message);
