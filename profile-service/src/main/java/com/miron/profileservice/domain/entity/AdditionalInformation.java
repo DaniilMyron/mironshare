@@ -1,19 +1,24 @@
 package com.miron.profileservice.domain.entity;
 
-import com.miron.profileservice.domain.valueObjects.AboutInformation;
-import com.miron.profileservice.domain.valueObjects.AccountPicture;
-import com.miron.profileservice.domain.valueObjects.AgeInformation;
-import com.miron.profileservice.domain.valueObjects.GenderInformation;
+import com.miron.profileservice.domain.valueObjects.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class AdditionalInformation {
+    private final AdditionalInformationId additionalInformationId;
     private AccountPicture accountPicture;
     private AgeInformation ageInformation;
     private GenderInformation genderInformation;
     private AboutInformation aboutInformation;
 
-    private AdditionalInformation(){}
+    private AdditionalInformation(){
+        additionalInformationId = new AdditionalInformationId();
+    }
+
+    public UUID getAdditionalInformationId() {
+        return additionalInformationId.getValue();
+    }
 
     public String getAccountPicture() {
         return accountPicture.getValue();
@@ -31,6 +36,26 @@ public class AdditionalInformation {
         return aboutInformation.getValue();
     }
 
+    public AdditionalInformation changeAccountPicture(String picture) {
+        this.accountPicture = new AccountPicture(picture.getBytes(StandardCharsets.UTF_8));
+        return this;
+    }
+
+    public AdditionalInformation changeAgeInformation(int age) {
+        this.ageInformation = new AgeInformation(age);
+        return this;
+    }
+
+    public AdditionalInformation changeGenderInformation(String gender) {
+        this.genderInformation = GenderInformation.valueOf(gender);
+        return this;
+    }
+
+    public AdditionalInformation changeAboutInformation(String about) {
+        this.aboutInformation = new AboutInformation(about);
+        return this;
+    }
+
     public static Builder Builder() {
         return new AdditionalInformation().new Builder();
     }
@@ -39,8 +64,8 @@ public class AdditionalInformation {
 
         private Builder() {}
 
-        public Builder setProfilePicture(String profilePicture) {
-            AdditionalInformation.this.accountPicture = new AccountPicture(profilePicture.getBytes(StandardCharsets.UTF_8));
+        public Builder setAccountPicture(String accountPicture) {
+            AdditionalInformation.this.accountPicture = new AccountPicture(accountPicture.getBytes(StandardCharsets.UTF_8));
             return this;
         }
 
