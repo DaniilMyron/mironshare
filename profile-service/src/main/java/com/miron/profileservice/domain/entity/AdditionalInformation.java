@@ -7,16 +7,16 @@ import java.util.UUID;
 
 public class AdditionalInformation {
     private final AdditionalInformationId additionalInformationId;
-    private AccountPicture accountPicture;
-    private AgeInformation ageInformation;
-    private GenderInformation genderInformation;
-    private AboutInformation aboutInformation;
+    private AccountPicture accountPicture = new AccountPicture(null);
+    private AgeInformation ageInformation = new AgeInformation(null);
+    private GenderInformation genderInformation = GenderInformation.UNDEFINED;
+    private AboutInformation aboutInformation = new AboutInformation(null);
 
     private AdditionalInformation(){
         additionalInformationId = new AdditionalInformationId();
     }
 
-    public UUID getAdditionalInformationId() {
+    public UUID getId() {
         return additionalInformationId.getValue();
     }
 
@@ -28,7 +28,7 @@ public class AdditionalInformation {
         return genderInformation.getValue();
     }
 
-    public int getAgeInformation() {
+    public Integer getAgeInformation() {
         return ageInformation.getValue();
     }
 
@@ -65,21 +65,33 @@ public class AdditionalInformation {
         private Builder() {}
 
         public Builder setAccountPicture(String accountPicture) {
+            if(accountPicture == null) {
+                return this;
+            }
             AdditionalInformation.this.accountPicture = new AccountPicture(accountPicture.getBytes(StandardCharsets.UTF_8));
             return this;
         }
 
-        public Builder setAge(int age) {
+        public Builder setAge(Integer age) {
+            if(age == null) {
+                return this;
+            }
             AdditionalInformation.this.ageInformation = new AgeInformation(age);
             return this;
         }
 
         public Builder setAbout(String about) {
+            if(about == null) {
+                return this;
+            }
             AdditionalInformation.this.aboutInformation = new AboutInformation(about);
             return this;
         }
 
         public Builder setGender(String gender) {
+            if(gender == null) {
+                return this;
+            }
             AdditionalInformation.this.genderInformation = GenderInformation.valueOf(gender);
             return this;
         }

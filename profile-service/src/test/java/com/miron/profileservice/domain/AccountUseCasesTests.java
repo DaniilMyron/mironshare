@@ -1,5 +1,6 @@
 package com.miron.profileservice.domain;
 
+import com.miron.profileservice.domain.entity.AdditionalInformation;
 import com.miron.profileservice.domain.repository.AccountRepositoryInMemory;
 import com.miron.profileservice.domain.spi.AccountRepository;
 import com.miron.profileservice.domain.usecases.ChangeAccountName;
