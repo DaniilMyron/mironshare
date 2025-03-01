@@ -49,16 +49,18 @@ public class Account {
         throw new IllegalArgumentException("Friend does not exist");
     }
 
-    public Account changeAccountName(AccountName name) {
-        this.name = name;
+    public Account changeAccountName(String name) {
+        this.name = new AccountName(name);
         return this;
     }
 
-    public Account changeAccountPassword(AccountPassword oldPassword, AccountPassword newPassword) {
-        if(!oldPassword.getValue().equals(newPassword.getValue())) {
-            throw new IllegalArgumentException("Old and new passwords do not match");
+    public Account changeAccountPassword(String oldPassword, String newPassword) {
+        var oldAccountPassword = new AccountPassword(oldPassword);
+        var newAccountPassword = new AccountPassword(newPassword);
+        if(!oldAccountPassword.getValue().equals(this.password.getValue())) {
+            throw new IllegalArgumentException("Passwords do not match");
         }
-        this.password = newPassword;
+        this.password = newAccountPassword;
         return this;
     }
 
@@ -68,6 +70,10 @@ public class Account {
 
     public String getName() {
         return name.getValue();
+    }
+
+    public String getPassword() {
+        return password.getValue();
     }
 
     public AdditionalInformation getAdditionalInformation() {
