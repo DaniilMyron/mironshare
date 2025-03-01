@@ -4,7 +4,6 @@ import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.domain.spi.AccountRepository;
 import com.miron.profileservice.domain.usecases.ChangeAccountName;
 
-import java.util.UUID;
 
 public class ChangeAccountNameUseCase implements ChangeAccountName {
     private final AccountRepository accountRepository;
@@ -14,8 +13,10 @@ public class ChangeAccountNameUseCase implements ChangeAccountName {
     }
 
     @Override
-    public Account execute(UUID id, String accountName) {
-        var account = accountRepository.findById(id).changeAccountName(accountName);
+    public Account execute(String username, String accountName) {
+        var account = accountRepository.findByUsername(username)
+                .orElseThrow(IllegalArgumentException::new)
+                .changeAccountName(accountName);
         return accountRepository.save(account);
     }
 }

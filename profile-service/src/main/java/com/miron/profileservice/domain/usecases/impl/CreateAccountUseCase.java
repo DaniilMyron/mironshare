@@ -12,8 +12,11 @@ public class CreateAccountUseCase implements CreateAccount {
     }
 
     @Override
-    public Account execute(String name, String password) {
-        var account = new Account(name, password);
+    public Account execute(String username, String password, String name) {
+        if(accountRepository.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("Account with username " + username + " already exists");
+        }
+        var account = new Account(username, password, name);
         return accountRepository.save(account);
     }
 }

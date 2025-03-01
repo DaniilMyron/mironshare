@@ -10,17 +10,26 @@ public class AccountRepositoryInMemory implements AccountRepository {
 
     @Override
     public Account save(Account account) {
-        accounts.computeIfPresent(account.getId(), (key, value) -> value.changeAccountName(account.getName())
-                .changeAccountPassword(value.getPassword(), account.getPassword())
-                .setAdditionalInformation(account.getAdditionalInformation())
-        );
+        accounts.computeIfPresent(account.getId(), (key, value) -> account);
         accounts.putIfAbsent(account.getId(), account);
         return accounts.get(account.getId());
     }
 
     @Override
-    public Account findById(UUID id) {
-        return accounts.get(id);
+    public Optional<Account> findById(UUID id) {
+        return Optional.ofNullable(accounts.get(id));
+    }
+
+    @Override
+    public Optional<Account> findByUsername(String username) {
+        Account foundedAccount = null;
+        for (Account account : accounts.values()) {
+            if (account.getUsername().equals(username)) {
+                foundedAccount = account;
+                break;
+            }
+        }
+        return Optional.ofNullable(foundedAccount);
     }
 
     @Override

@@ -3,26 +3,30 @@ package com.miron.profileservice.domain.entity;
 import com.miron.profileservice.domain.valueObjects.AccountId;
 import com.miron.profileservice.domain.valueObjects.AccountName;
 import com.miron.profileservice.domain.valueObjects.AccountPassword;
+import com.miron.profileservice.domain.valueObjects.AccountUsername;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class Account {
     private AccountId id;
-    private AccountName name;
+    private AccountUsername username;
     private AccountPassword password;
-    private List<Account> friends;
-    private List<Account> subscribers;
+    private AccountName accountName;
+    private List<Account> friends = new ArrayList<>();
+    private List<Account> subscribers = new ArrayList<>();
     private AdditionalInformation additionalInformation;
 
-    public Account(String name, String password) {
+    public Account(String username, String password, String name) {
         this.id = new AccountId();
-        this.name = new AccountName(name);
+        this.username = new AccountUsername(username);
         this.password = new AccountPassword(password);
+        this.accountName = new AccountName(name);
     }
 
     public Account subscribeOnUser(Account user) {
-        if(this.friends.contains(user)) {
+        if (this.friends.contains(user)) {
             throw new IllegalArgumentException("Friend already exists");
         }
         if(!this.subscribers.contains(user)) {
@@ -50,7 +54,7 @@ public class Account {
     }
 
     public Account changeAccountName(String name) {
-        this.name = new AccountName(name);
+        this.accountName = new AccountName(name);
         return this;
     }
 
@@ -68,12 +72,24 @@ public class Account {
         return id.getValue();
     }
 
-    public String getName() {
-        return name.getValue();
+    public String getUsername() {
+        return username.getValue();
     }
 
     public String getPassword() {
         return password.getValue();
+    }
+
+    public String getAccountName() {
+        return accountName.getValue();
+    }
+
+    public List<Account> getFriends() {
+        return friends;
+    }
+
+    public List<Account> getSubscribers() {
+        return subscribers;
     }
 
     public AdditionalInformation getAdditionalInformation() {

@@ -2,9 +2,10 @@ package com.miron.profileservice.domain.api;
 
 import com.miron.profileservice.domain.entity.Account;
 
-import java.util.UUID;
 
 public interface AccountService {
-    Account createAccount(String name, String password);
-    Account changeNameById(UUID id, String accountName);
+    Account createAccount(String username, String password, String name);
+    Account changeNameByUsername(String username, String accountName);
+    Account changePasswordByUsername(String username, String oldPassword, String newPassword);
+    Account subscribeOnUserByUsername(String username, Account userToSubscribeOn);
 }
