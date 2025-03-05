@@ -3,14 +3,16 @@ package com.miron.directservice.infrastructure.controller;
 import com.miron.directservice.domain.api.*;
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.entity.Message;
-import com.miron.directservice.infrastructure.controller.model.MessageIdRequest;
-import com.miron.directservice.infrastructure.controller.model.MessageTextRequest;
-import com.miron.directservice.infrastructure.controller.model.MessagesResponse;
-import com.miron.directservice.infrastructure.controller.model.ChatResponse;
+import com.miron.directservice.domain.entity.PersonalChat;
+import com.miron.directservice.domain.valueObject.User;
+import com.miron.directservice.infrastructure.controller.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,23 +21,30 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/direct")
 public class BasicChatController {
-    private static final int SENDER_ID = 1;
+    private static final UUID SENDER_ID = UUID.randomUUID();
     private final RetrieveChats retrieveChatsCommand;
     private final RetrieveChat retrieveChatCommand;
     private final SendMessage sendMessageCommand;
     private final RedactMessage redactMessageCommand;
     private final DeleteMessage deleteMessageCommand;
+    private final CreatePersonalChat createPersonalChatCommand;
+    private final CreateGroupChat createGroupChatCommand;
 
     public BasicChatController(RetrieveChats retrieveChatsCommand,
                                @Qualifier("retrieveAnyChat") RetrieveChat retrieveChatCommand,
                                SendMessage sendMessageCommand,
                                RedactMessage redactMessageCommand,
-                               DeleteMessage deleteMessageCommand) {
+                               DeleteMessage deleteMessageCommand,
+                               CreatePersonalChat createPersonalChatCommand,
+                               CreateGroupChat createGroupChatCommand
+                               ) {
         this.retrieveChatsCommand = retrieveChatsCommand;
         this.retrieveChatCommand = retrieveChatCommand;
         this.sendMessageCommand = sendMessageCommand;
         this.redactMessageCommand = redactMessageCommand;
         this.deleteMessageCommand = deleteMessageCommand;
+        this.createPersonalChatCommand = createPersonalChatCommand;
+        this.createGroupChatCommand = createGroupChatCommand;
     }
 
     @GetMapping
@@ -100,6 +109,16 @@ public class BasicChatController {
         var chat = retrieveChat(id);
         var response = sendMessageCommand.sendMessageInChat(chat, new Message(messageTextRequest.text(), SENDER_ID));
         return ResponseEntity.ok().body(new MessagesResponse(response));
+    }
+
+    @PostMapping("/create-personal-chat/{id}")
+    public ResponseEntity<PersonalChatResponse> createPersonalChat(@PathVariable("id") UUID id) {
+        RestTemplate restTemplate = new RestTemplate();
+        String template = restTemplate.getForObject("http://localhost:8083/api/v1/profile/%s".formatted(id), String.class);
+        //TODO implement user repo
+        var username = "miron1";
+        var response = createPersonalChatCommand.createChat(template, username);
+        return ResponseEntity.ok().body(new PersonalChatResponse(response));
     }
 
     @DeleteMapping("/{id}/delete")

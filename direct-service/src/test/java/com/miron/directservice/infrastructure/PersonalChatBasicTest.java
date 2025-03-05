@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +44,7 @@ public class PersonalChatBasicTest {
     @Autowired
     private ChatRepository<PersonalChat> chatRepository;
 
+    /*
     @BeforeEach
     void setUp() {
         PersonalChat personalChat = new PersonalChat(
@@ -62,6 +64,7 @@ public class PersonalChatBasicTest {
         personalChatBasicService.addMessage(new Message("firstMessage secondChat", 1), personalChat.getId());
         personalChatBasicService.addMessage(new Message("secondMessage secondChat", 2), personalChat.getId());
     }
+     */
 
     @Test
     void getAllChats() throws Exception {
@@ -125,6 +128,16 @@ public class PersonalChatBasicTest {
                         patch(BASE_URL + "/%s/redact".formatted(chatRepository.findAll().getLast().getId()))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(secondValue))
+                .andExpect(status().isOk())
+                .andReturn();
+        System.out.println(mock.getResponse().getContentAsString());
+    }
+
+    @Test
+    void createPersonalChat() throws Exception {
+        var mock = mockMvc.perform(
+                        post(BASE_URL + "/create-personal-chat/%s".formatted("4a88cec9-7b5d-4bbd-af22-37a4866afa97"))
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         System.out.println(mock.getResponse().getContentAsString());

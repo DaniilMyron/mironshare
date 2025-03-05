@@ -5,6 +5,7 @@ import com.miron.directservice.domain.entity.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.random.RandomGenerator;
 
 public class RandomMessagesCreation {
@@ -14,7 +15,7 @@ public class RandomMessagesCreation {
             Message message = Message.Builder()
                     .setId()
                     .setText(createRandomString(10))
-                    .setSenderId(1)
+                    .setSenderId(UUID.randomUUID())
                     .build();
             messages.add(message);
         }

@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface MessageRepository {
     Message save(Message message);
     Message findById(UUID id);
-    Message findBySenderId(int senderId);
+    Message findBySenderId(UUID senderId);
     List<Message> findAll();
     void deleteById(UUID id);
     void deleteAllChatMessages(Chat chat);

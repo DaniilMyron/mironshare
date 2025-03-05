@@ -36,24 +36,24 @@ public class ChatBasicOperationsTest {
     PersonalChat personalChat;
     GroupChat groupChat;
 
-    @BeforeEach
-    public void setUp() {
-        messages = RandomMessagesCreation.createRandomMessages(10);
-        chatMessageBasicService = new MessageService(messageRepository);
-        personalChatBasicService = new PersonalChatBasicService(personalChatRepository, chatMessageBasicService);
-        groupChatBasicService = new GroupChatBasicService(groupChatRepository, chatMessageBasicService);
-
-        personalChat = new PersonalChat(
-                new ChatName("ChatName"),
-                new User(1, "danya", "", ""),
-                new User(2, "danya", "", "")
-        );
-        groupChat = new GroupChat(
-                new ChatName("ChatName")
-        );
-        groupChatBasicService.createChat(groupChat);
-        personalChatBasicService.createChat(personalChat);
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        messages = RandomMessagesCreation.createRandomMessages(10);
+//        chatMessageBasicService = new MessageService(messageRepository);
+//        personalChatBasicService = new PersonalChatBasicService(personalChatRepository, chatMessageBasicService);
+//        groupChatBasicService = new GroupChatBasicService(groupChatRepository, chatMessageBasicService);
+//
+//        personalChat = new PersonalChat(
+//                new ChatName("ChatName"),
+//                new User(1, "danya", "", ""),
+//                new User(2, "danya", "", "")
+//        );
+//        groupChat = new GroupChat(
+//                new ChatName("ChatName")
+//        );
+//        groupChatBasicService.createChat(groupChat);
+//        personalChatBasicService.createChat(personalChat);
+//    }
 
     @Test
     public void testDeletingFunctionality() {

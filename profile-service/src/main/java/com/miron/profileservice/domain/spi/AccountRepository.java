@@ -10,6 +10,7 @@ public interface AccountRepository {
     Account save(Account account);
     Optional<Account> findById(UUID id);
     Optional<Account> findByUsername(String username);
+    Optional<Account> findByAccountName(String accountName);
     List<Account> findAll();
     void deleteById(UUID id);
 }

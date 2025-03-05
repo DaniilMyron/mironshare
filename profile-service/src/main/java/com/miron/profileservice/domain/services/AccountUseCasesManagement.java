@@ -1,11 +1,10 @@
 package com.miron.profileservice.domain.services;
 
 import com.miron.profileservice.domain.api.AccountService;
-import com.miron.profileservice.domain.usecases.ChangeAccountName;
-import com.miron.profileservice.domain.usecases.ChangeAccountPassword;
-import com.miron.profileservice.domain.usecases.CreateAccount;
+import com.miron.profileservice.domain.usecases.*;
 import com.miron.profileservice.domain.entity.Account;
-import com.miron.profileservice.domain.usecases.SubscribeOnUser;
+
+import java.util.UUID;
 
 
 public class AccountUseCasesManagement implements AccountService {
@@ -13,12 +12,19 @@ public class AccountUseCasesManagement implements AccountService {
     private final ChangeAccountName changeAccountNameUseCase;
     private final ChangeAccountPassword changeAccountPasswordUseCase;
     private final SubscribeOnUser subscribeOnUserUseCase;
+    private final RetrieveUser retrieveAccountUseCase;
 
-    public AccountUseCasesManagement(CreateAccount createAccountUseCase, ChangeAccountName changeAccountNameUseCase, ChangeAccountPassword changeAccountPasswordUseCase, SubscribeOnUser subscribeOnUserUseCase) {
+    public AccountUseCasesManagement(CreateAccount createAccountUseCase, ChangeAccountName changeAccountNameUseCase, ChangeAccountPassword changeAccountPasswordUseCase, SubscribeOnUser subscribeOnUserUseCase, RetrieveUser retrieveAccountUseCase) {
         this.createAccountUseCase = createAccountUseCase;
         this.changeAccountNameUseCase = changeAccountNameUseCase;
         this.changeAccountPasswordUseCase = changeAccountPasswordUseCase;
         this.subscribeOnUserUseCase = subscribeOnUserUseCase;
+        this.retrieveAccountUseCase = retrieveAccountUseCase;
+    }
+
+    @Override
+    public Account retrieveUser(UUID id) {
+        return retrieveAccountUseCase.execute(id);
     }
 
     @Override

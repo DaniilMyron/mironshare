@@ -33,6 +33,18 @@ public class AccountRepositoryInMemory implements AccountRepository {
     }
 
     @Override
+    public Optional<Account> findByAccountName(String accountName) {
+        Account foundedAccount = null;
+        for (Account account : accounts.values()) {
+            if (account.getAccountName().equals(accountName)) {
+                foundedAccount = account;
+                break;
+            }
+        }
+        return Optional.ofNullable(foundedAccount);
+    }
+
+    @Override
     public List<Account> findAll() {
         return new ArrayList<>(accounts.values());
     }

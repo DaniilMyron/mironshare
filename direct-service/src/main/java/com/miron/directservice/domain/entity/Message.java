@@ -8,12 +8,12 @@ import java.util.UUID;
 public class Message implements ValueObject<String> {
     private MessageID messageId;
     private String text;
-    private int senderId;
+    private UUID senderId;
 
     public Message() {
     }
 
-    public Message(String text, int senderId) {
+    public Message(String text, UUID senderId) {
         this.messageId = new MessageID();
         if(!text.isBlank() && !text.isEmpty())
             this.text = text;
@@ -37,7 +37,7 @@ public class Message implements ValueObject<String> {
         return messageId.getValue();
     }
 
-    public int getSenderId() {
+    public UUID getSenderId() {
         return senderId;
     }
 
@@ -70,7 +70,7 @@ public class Message implements ValueObject<String> {
             return this;
         }
 
-        public Builder setSenderId(int senderId) {
+        public Builder setSenderId(UUID senderId) {
             Message.this.senderId = senderId;
             return this;
         }

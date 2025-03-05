@@ -56,6 +56,16 @@ public class DomainConfiguration {
     }
 
     @Bean
+    public CreatePersonalChat createPersonalChat(ChatRepository<PersonalChat> personalChat) {
+        return new CreatePersonalChatUseCase(personalChat);
+    }
+
+    @Bean
+    public CreateGroupChat createGroupChat(ChatRepository<GroupChat> groupChat) {
+        return new CreateGroupChatUseCase(groupChat);
+    }
+
+    @Bean
     public RetrieveChats retrieveChatsCommand(ServicesFactory servicesFactory){
         return new RetrieveAllChatsUseCase(servicesFactory);
     }

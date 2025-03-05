@@ -22,7 +22,7 @@ public class MessagesInMemoryRepository implements MessageRepository {
     }
 
     @Override
-    public Message findBySenderId(int senderId) {
+    public Message findBySenderId(UUID senderId) {
         return messages.values()
                 .stream()
                 .filter(m -> m.getSenderId() == senderId)
