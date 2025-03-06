@@ -4,12 +4,14 @@ import com.miron.profileservice.domain.entity.Account;
 
 
 public class AccountResponse{
+    private String accountUsername;
     private String accountName;
     private String accountPicture;
     private Integer userAge;
     private String userGender;
     private String userAbout;
     public AccountResponse(Account account) {
+        this.accountUsername = account.getUsername();
         this.accountName = account.getAccountName();
         if(account.getAdditionalInformation() != null) {
             this.accountPicture = account.getAdditionalInformation().getAccountPicture();
@@ -17,6 +19,10 @@ public class AccountResponse{
             this.userGender = account.getAdditionalInformation().getGenderInformation().name();
             this.userAbout = account.getAdditionalInformation().getAboutInformation();
         }
+    }
+
+    public String getAccountUsername() {
+        return accountUsername;
     }
 
     public String getAccountName() {

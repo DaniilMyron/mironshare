@@ -5,6 +5,8 @@ import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.springAnnotations.DomainService;
 import com.miron.directservice.domain.entity.Message;
 
+import java.util.UUID;
+
 
 @DomainService
 public class MessageService implements MessageBasicService{
@@ -30,7 +32,12 @@ public class MessageService implements MessageBasicService{
     }
 
     @Override
-    public Message redactMessage(Message message) {
-        return messageRepository.save(message);
+    public Message redactMessage(Message message, String redactedText) {
+        return messageRepository.save(message.setText(redactedText));
+    }
+
+    @Override
+    public Message findById(UUID id) {
+        return messageRepository.findById(id);
     }
 }

@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public record MessagesResponse(String text, UUID senderId) {
     public MessagesResponse(Message message) {
-        this(message.getValue(), message.getSenderId());
+        this(message.getText(), message.getSenderId());
     }
 }

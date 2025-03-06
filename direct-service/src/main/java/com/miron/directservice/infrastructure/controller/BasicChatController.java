@@ -1,17 +1,10 @@
 package com.miron.directservice.infrastructure.controller;
 
 import com.miron.directservice.domain.api.*;
-import com.miron.directservice.domain.entity.Chat;
-import com.miron.directservice.domain.entity.Message;
-import com.miron.directservice.domain.entity.PersonalChat;
-import com.miron.directservice.domain.valueObject.User;
 import com.miron.directservice.infrastructure.controller.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -21,121 +14,97 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/direct")
 public class BasicChatController {
-    private static final UUID SENDER_ID = UUID.randomUUID();
-    private final RetrieveChats retrieveChatsCommand;
-    private final RetrieveChat retrieveChatCommand;
-    private final SendMessage sendMessageCommand;
-    private final RedactMessage redactMessageCommand;
-    private final DeleteMessage deleteMessageCommand;
-    private final CreatePersonalChat createPersonalChatCommand;
-    private final CreateGroupChat createGroupChatCommand;
+    //TODO DELETE THIS
+    private static final String USERNAME = "MIRON1";
+    private final RestTemplate restTemplate = new RestTemplate();
+    private static final String PROFILE_URI = "http://localhost:8083/api/v1/profile";
+    private final ChatBasicService chatBasicService;
 
-    public BasicChatController(RetrieveChats retrieveChatsCommand,
-                               @Qualifier("retrieveAnyChat") RetrieveChat retrieveChatCommand,
-                               SendMessage sendMessageCommand,
-                               RedactMessage redactMessageCommand,
-                               DeleteMessage deleteMessageCommand,
-                               CreatePersonalChat createPersonalChatCommand,
-                               CreateGroupChat createGroupChatCommand
-                               ) {
-        this.retrieveChatsCommand = retrieveChatsCommand;
-        this.retrieveChatCommand = retrieveChatCommand;
-        this.sendMessageCommand = sendMessageCommand;
-        this.redactMessageCommand = redactMessageCommand;
-        this.deleteMessageCommand = deleteMessageCommand;
-        this.createPersonalChatCommand = createPersonalChatCommand;
-        this.createGroupChatCommand = createGroupChatCommand;
+    public BasicChatController(ChatBasicService chatBasicService) {
+        this.chatBasicService = chatBasicService;
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> getChatsList() {
-        var response = retrieveChatsCommand.retrieveAllChats()
+    public ResponseEntity<List<ChatResponse>> retrieveUserChats() {
+        var response = chatBasicService.getUserChats(USERNAME)
                 .stream()
                 .map(ChatResponse::new)
                 .toList();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChatMessages(@PathVariable("id") UUID id) {
-        retrieveChat(id).clearChat();
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ChatResponse> deleteChatMessages(@PathVariable("id") UUID id) {
+        chatBasicService.clearChat(id);
+        return ResponseEntity.noContent()
+                .build();
     }
-
-    //OR MAKE IT IN SERVICE: response = service1.retrieve() != null ? service1.retrieve() : service2.retrieve()
 
     @GetMapping("/{id}")
     public ResponseEntity<List<MessagesResponse>> retrieveChatMessages(@PathVariable("id") UUID id) {
-        var chat = retrieveChat(id);
-        var response = chat.getMessages()
+        var response = chatBasicService.retrieveMessages(id)
                 .stream()
                 .map(MessagesResponse::new)
                 .toList();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
     @GetMapping("/{id}/find-message")
-    public ResponseEntity<List<MessagesResponse>> findMessage(@PathVariable("id") UUID id,
-                                                              @RequestBody MessageTextRequest messageTextRequest) {
-        var chat = retrieveChat(id);
-        var response = chat.getMessages()
+    public ResponseEntity<List<MessagesResponse>> findMessages(@PathVariable("id") UUID id,
+                                                               @RequestBody MessageTextRequest messageTextRequest) {
+
+        var response = chatBasicService.findMessages(id, messageTextRequest.text())
                 .stream()
-                .filter(messageValue -> messageValue.getValue()
-                        .toLowerCase()
-                        .contains(messageTextRequest.text()
-                                .toLowerCase()))
                 .map(MessagesResponse::new)
                 .toList();
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
     @PatchMapping("/{id}/redact")
     public ResponseEntity<MessagesResponse> redactMessage(@PathVariable("id") UUID id,
                                                           @RequestBody MessageIdRequest messageIdRequest) {
-        var chat = retrieveChat(id);
-        var message = chat.getMessages()
-                .stream()
-                .filter(messageValue -> messageValue.getId()
-                        .equals(messageIdRequest.id()))
-                .findAny()
-                .orElseThrow(RuntimeException::new);
-        var response = redactMessageCommand.redactMessageInChat(chat, message.setText(messageIdRequest.redactedText()));
-        return ResponseEntity.ok().body(new MessagesResponse(response));
+        var response = chatBasicService.redactMessage(id, messageIdRequest.id(), messageIdRequest.redactedText());
+        return ResponseEntity.ok()
+                .body(new MessagesResponse(response));
     }
 
     @PostMapping("/{id}/send")
     public ResponseEntity<MessagesResponse> sendMessage(@PathVariable("id") UUID id,
                                                         @RequestBody MessageTextRequest messageTextRequest) {
-        var chat = retrieveChat(id);
-        var response = sendMessageCommand.sendMessageInChat(chat, new Message(messageTextRequest.text(), SENDER_ID));
-        return ResponseEntity.ok().body(new MessagesResponse(response));
+        var response = chatBasicService.sendMessage(id, messageTextRequest.text(), USERNAME);
+        return ResponseEntity.ok()
+                .body(new MessagesResponse(response));
     }
 
     @PostMapping("/create-personal-chat/{id}")
-    public ResponseEntity<PersonalChatResponse> createPersonalChat(@PathVariable("id") UUID id) {
-        RestTemplate restTemplate = new RestTemplate();
-        String template = restTemplate.getForObject("http://localhost:8083/api/v1/profile/%s".formatted(id), String.class);
-        //TODO implement user repo
-        var username = "miron1";
-        var response = createPersonalChatCommand.createChat(template, username);
-        return ResponseEntity.ok().body(new PersonalChatResponse(response));
+    public ResponseEntity<PersonalChatResponse> createPersonalChat(@PathVariable("id") UUID userId) {
+        String template = restTemplate.getForObject(PROFILE_URI + "/%s".formatted(userId), String.class);
+        var response = chatBasicService.createPersonalChat(template, USERNAME);
+        return ResponseEntity.ok()
+                .body(new PersonalChatResponse(response));
     }
+    /*
+    @PostMapping("/create-group-chat")
+    public ResponseEntity<PersonalChatResponse> createGroupChat(@RequestBody ) {
+        String template = restTemplate.getForObject(PROFILE_URI + "/%s".formatted(userId), String.class);
+        String requestJson = "{\"queriedQuestion\":\"Is there pain in your hand?\"}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String template = restTemplate.getForObject(PROFILE_URI + "/retrieve-profiles", String.class, params);
+        var response = chatBasicService.createPersonalChat(template, USERNAME);
+        return ResponseEntity.ok()
+                .body(new PersonalChatResponse(response));
+    }
+     */
 
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteMessage(@PathVariable("id") UUID id,
                                               @RequestBody MessageIdRequest messageIdRequest) {
-        var chat = retrieveChat(id);
-        var message = chat.getMessages()
-                .stream()
-                .filter(messageValue -> messageValue.getId()
-                        .equals(messageIdRequest.id()))
-                .findAny()
-                .orElseThrow(RuntimeException::new);
-        deleteMessageCommand.deleteMessageByChatId(chat, message);
-        return ResponseEntity.noContent().build();
-    }
-
-    private Chat retrieveChat(UUID chatId){
-        return retrieveChatCommand.retrieveChat(chatId);
+        chatBasicService.deleteMessage(messageIdRequest.id(), messageIdRequest.redactedText(), id);
+        return ResponseEntity.noContent()
+                .build();
     }
 }

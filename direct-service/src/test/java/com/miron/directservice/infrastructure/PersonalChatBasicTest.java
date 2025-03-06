@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miron.directservice.domain.api.ChatBasicService;
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.repository.GroupChatInMemoryRepository;
+import com.miron.directservice.domain.repository.UserRepositoryInMemory;
 import com.miron.directservice.domain.spi.ChatRepository;
+import com.miron.directservice.domain.spi.UserRepository;
 import com.miron.directservice.domain.springAnnotations.DomainRepository;
 import com.miron.directservice.domain.valueObject.ChatName;
 import com.miron.directservice.domain.entity.Message;
@@ -24,8 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,38 +35,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BasicChatController.class)
 @Import(DomainConfiguration.class)
 public class PersonalChatBasicTest {
+    private static final String template = "{\"accountUsername\":\"MIRON1\",\"accountName\":\"danik\",\"accountPicture\":null,\"userAge\":null,\"userGender\":null,\"userAbout\":null}";
+    private static final String USERNAME = "username";
     @Autowired
     private MockMvc mockMvc;
     private ObjectMapper objectMapper = new ObjectMapper();
     private static final String BASE_URL = "/api/v1/direct";
 
     @Autowired
-    private ChatBasicService<PersonalChat> personalChatBasicService;
+    private ChatBasicService chatBasicService;
 
     @Autowired
     private ChatRepository<PersonalChat> chatRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    /*
     @BeforeEach
     void setUp() {
-        PersonalChat personalChat = new PersonalChat(
-                new ChatName("ChatName"),
-                new User(1, "danya", "", ""),
-                new User(2, "danya", "", "")
-        );
-        personalChatBasicService.createChat(personalChat);
-        personalChatBasicService.addMessage(new Message("firstMessage firstChat", 1), personalChat.getId());
-        personalChatBasicService.addMessage(new Message("secondMessage firstChat", 2), personalChat.getId());
-        personalChat = new PersonalChat(
-                new ChatName("NewChatName"),
-                new User(1, "danya", "", ""),
-                new User(2, "danya", "", "")
-        );
-        personalChatBasicService.createChat(personalChat);
-        personalChatBasicService.addMessage(new Message("firstMessage secondChat", 1), personalChat.getId());
-        personalChatBasicService.addMessage(new Message("secondMessage secondChat", 2), personalChat.getId());
+        userRepository.save(new User(USERNAME, USERNAME, null, null, null));
+        var personalChat = chatBasicService.createPersonalChat(template, USERNAME);
+
+        chatBasicService.sendMessage(personalChat.getId(), "firstMessage firstUser", USERNAME);
+        chatBasicService.sendMessage(personalChat.getId(), "secondMessage firstUser", USERNAME);
+
+        chatBasicService.sendMessage(personalChat.getId(), "firstMessage secondUser", "MIRON1");
+        chatBasicService.sendMessage(personalChat.getId(), "secondMessage secondUser", "MIRON1");
     }
-     */
 
     @Test
     void getAllChats() throws Exception {

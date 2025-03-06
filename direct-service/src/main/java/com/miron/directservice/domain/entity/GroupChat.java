@@ -9,7 +9,7 @@ import java.util.List;
 
 public class GroupChat extends Chat {
     private ChatName chatName;
-    private List<User> users = new ArrayList<User>();
+    private List<User> users = new ArrayList<>();
 
     public GroupChat(ChatName name, User... users) {
         this.chatName = name;
@@ -20,6 +20,10 @@ public class GroupChat extends Chat {
 
     public String getName() {
         return chatName.getValue();
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 
     public void addUser(User user) {

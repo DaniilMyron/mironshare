@@ -3,15 +3,17 @@ package com.miron.directservice.domain.repository;
 import com.miron.directservice.domain.entity.Chat;
 import com.miron.directservice.domain.spi.MessageRepository;
 import com.miron.directservice.domain.entity.Message;
+import com.miron.directservice.domain.springAnnotations.DomainRepository;
 
 import java.util.*;
 
+@DomainRepository
 public class MessagesInMemoryRepository implements MessageRepository {
     private final Map<UUID, Message> messages = new HashMap<>();
 
     @Override
     public Message save(Message message) {
-        messages.computeIfPresent(message.getId(), (key, value) -> value.setText(message.getValue()));
+        messages.computeIfPresent(message.getId(), (key, value) -> value.setText(message.getText()));
         messages.putIfAbsent(message.getId(), message);
         return messages.get(message.getId());
     }

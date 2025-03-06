@@ -4,6 +4,8 @@ import com.miron.profileservice.domain.api.AccountService;
 import com.miron.profileservice.domain.usecases.*;
 import com.miron.profileservice.domain.entity.Account;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -25,6 +27,15 @@ public class AccountUseCasesManagement implements AccountService {
     @Override
     public Account retrieveUser(UUID id) {
         return retrieveAccountUseCase.execute(id);
+    }
+
+    @Override
+    public List<Account> retrieveUsers(String[] usersId) {
+        List<Account> accounts = new ArrayList<>();
+        for (int i = 0; i < usersId.length; i++) {
+            accounts.add(retrieveAccountUseCase.execute(UUID.fromString(usersId[i])));
+        }
+        return accounts;
     }
 
     @Override

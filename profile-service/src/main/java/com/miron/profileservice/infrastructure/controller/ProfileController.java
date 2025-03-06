@@ -1,14 +1,12 @@
 package com.miron.profileservice.infrastructure.controller;
 
 import com.miron.profileservice.domain.api.AccountService;
-import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.infrastructure.controller.model.AccountResponse;
+import com.miron.profileservice.infrastructure.controller.model.AccountsRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,8 +20,19 @@ public class ProfileController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> retrieveProfile(@PathVariable UUID id) {
-        var account = new Account("miron2", "12345678910", "danya");//accountService.retrieveUser(id);
+        var account = accountService.retrieveUser(id);
         var response = new AccountResponse(account);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    @GetMapping("/retrieve-profiles")
+    public ResponseEntity<List<AccountResponse>> retrieveProfiles(@RequestBody AccountsRequest accountsRequest) {
+        var accounts = accountService.retrieveUsers(accountsRequest.getUsersId());
+        var response = accounts.stream()
+                .map(AccountResponse::new)
+                .toList();
+        return ResponseEntity.ok()
+                .body(response);
     }
 }

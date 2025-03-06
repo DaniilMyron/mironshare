@@ -1,11 +1,10 @@
 package com.miron.directservice.domain.entity;
 
 import com.miron.directservice.domain.valueObject.MessageID;
-import com.miron.directservice.domain.valueObject.ValueObject;
 
 import java.util.UUID;
 
-public class Message implements ValueObject<String> {
+public class Message {
     private MessageID messageId;
     private String text;
     private UUID senderId;
@@ -23,8 +22,7 @@ public class Message implements ValueObject<String> {
         this.senderId = senderId;
     }
 
-    @Override
-    public String getValue() {
+    public String getText() {
         return this.text;
     }
 

@@ -2,9 +2,12 @@ package com.miron.directservice.domain.repository;
 
 import com.miron.directservice.domain.entity.PersonalChat;
 import com.miron.directservice.domain.spi.ChatRepository;
+import com.miron.directservice.domain.springAnnotations.DomainRepository;
+import com.miron.directservice.domain.valueObject.User;
 
 import java.util.*;
 
+@DomainRepository
 public class PersonalChatInMemoryRepository implements ChatRepository<PersonalChat> {
     private final Map<UUID, PersonalChat> chats = new HashMap<>();
 
@@ -27,5 +30,16 @@ public class PersonalChatInMemoryRepository implements ChatRepository<PersonalCh
     @Override
     public void deleteById(UUID id) {
         chats.remove(id);
+    }
+
+    @Override
+    public List<PersonalChat> findByUser(User user) {
+        List<PersonalChat> result = new ArrayList<>();
+        for(PersonalChat chat : chats.values()) {
+            if(chat.getSenderId().equals(user.getValue()) || chat.getReceiverId().equals(user.getValue())) {
+                result.add(chat);
+            }
+        }
+        return result;
     }
 }
