@@ -1,5 +1,6 @@
 package com.miron.profileservice.domain;
 
+import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.domain.repository.AccountRepositoryInMemory;
 import com.miron.profileservice.domain.repository.AdditionalInformationRepositoryInMemory;
 import com.miron.profileservice.domain.spi.AccountRepository;
@@ -18,10 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AdditionalInformationUseCasesTests {
     private final static String FIRST_USERNAME = "mironn1";
     private final static String SECOND_USERNAME = "mironn2";
-    private AccountRepository accountRepository = new AccountRepositoryInMemory();
+    private AccountRepository<Account> accountRepository = new AccountRepositoryInMemory();
     private AdditionalInformationRepository additionalInformationRepository = new AdditionalInformationRepositoryInMemory();
     private CreateAdditionalInformation createAdditionalInformationUseCase = new CreateAdditionalInformationUseCase(additionalInformationRepository, accountRepository);
-    private CreateAccount createAccountUseCase = new CreateAccountUseCase(accountRepository);
+    private CreateAccount<Account> createAccountUseCase = new CreateAccountUseCase(accountRepository, null);
 
     @BeforeEach
     public void setup() {

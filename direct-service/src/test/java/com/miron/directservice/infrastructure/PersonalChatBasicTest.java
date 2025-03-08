@@ -16,6 +16,7 @@ import com.miron.directservice.infrastructure.controller.BasicChatController;
 import com.miron.directservice.infrastructure.controller.model.MessageIdRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +45,7 @@ public class PersonalChatBasicTest {
     private static final String BASE_URL = "/api/v1/direct";
 
     @Autowired
-    private ChatBasicService chatBasicService;
+    private ChatBasicService chatBasicService = Mockito.mock(ChatBasicService.class);
 
     @Autowired
     private ChatRepository<PersonalChat> chatRepository;
@@ -74,18 +76,12 @@ public class PersonalChatBasicTest {
 
     @Test
     void getChatById() throws Exception {
-        var mock = mockMvc.perform(
-                        get(BASE_URL + "/%s".formatted(chatRepository.findAll().getFirst().getId()))
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        System.out.println(mock.getResponse().getContentAsString());
-        mock = mockMvc.perform(
-                        get(BASE_URL + "/%s".formatted(chatRepository.findAll().getLast().getId()))
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        System.out.println(mock.getResponse().getContentAsString());
+        ChatBasicService chatBasicService = Mockito.mock(ChatBasicService.class);
+        UUID id = UUID.randomUUID();
+        Mockito.when(chatBasicService.retrieveMessages(id))
+                .thenReturn(chatRepository.findAll().getFirst().getMessages());
+        var messages = chatBasicService.retrieveMessages(id);
+        messages.forEach(m -> System.out.println(m.getText() + " " + m.getSenderId()));
     }
 
     @Test

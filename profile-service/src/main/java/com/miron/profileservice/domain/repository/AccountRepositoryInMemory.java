@@ -2,10 +2,12 @@ package com.miron.profileservice.domain.repository;
 
 import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.domain.spi.AccountRepository;
+import com.miron.profileservice.domain.springAnnotations.DomainRepository;
 
 import java.util.*;
 
-public class AccountRepositoryInMemory implements AccountRepository {
+@DomainRepository
+public class AccountRepositoryInMemory implements AccountRepository<Account> {
     private final Map<UUID, Account> accounts = new HashMap<>();
 
     @Override

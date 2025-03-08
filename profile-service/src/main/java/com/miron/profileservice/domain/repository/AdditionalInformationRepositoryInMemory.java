@@ -2,9 +2,11 @@ package com.miron.profileservice.domain.repository;
 
 import com.miron.profileservice.domain.entity.AdditionalInformation;
 import com.miron.profileservice.domain.spi.AdditionalInformationRepository;
+import com.miron.profileservice.domain.springAnnotations.DomainRepository;
 
 import java.util.*;
 
+@DomainRepository
 public class AdditionalInformationRepositoryInMemory implements AdditionalInformationRepository {
     private final Map<UUID, AdditionalInformation> additions = new HashMap<>();
 

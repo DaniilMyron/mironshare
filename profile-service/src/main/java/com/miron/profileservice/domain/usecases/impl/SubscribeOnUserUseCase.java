@@ -2,18 +2,19 @@ package com.miron.profileservice.domain.usecases.impl;
 
 import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.domain.spi.AccountRepository;
+import com.miron.profileservice.domain.springAnnotations.DomainUseCase;
 import com.miron.profileservice.domain.usecases.SubscribeOnUser;
 
+@DomainUseCase
+public class SubscribeOnUserUseCase<T extends Account> implements SubscribeOnUser<T> {
+    private final AccountRepository<T> accountRepository;
 
-public class SubscribeOnUserUseCase implements SubscribeOnUser {
-    private final AccountRepository accountRepository;
-
-    public SubscribeOnUserUseCase(AccountRepository accountRepository) {
+    public SubscribeOnUserUseCase(AccountRepository<T> accountRepository) {
         this.accountRepository = accountRepository;
     }
 
     @Override
-    public Account execute(String username, Account userToSubscribeOn) {
+    public T execute(String username, Account userToSubscribeOn) {
         if(userToSubscribeOn.getUsername().equals(username)) {
             throw new IllegalArgumentException("Cannot subscribe to yourself");
         }

@@ -1,5 +1,6 @@
 package com.miron.profileservice.domain.entity;
 
+import com.miron.profileservice.domain.spi.BCryptEncoderForAccountPassword;
 import com.miron.profileservice.domain.valueObjects.AccountId;
 import com.miron.profileservice.domain.valueObjects.AccountName;
 import com.miron.profileservice.domain.valueObjects.AccountPassword;
@@ -18,12 +19,14 @@ public class Account {
     private List<Account> subscribers = new ArrayList<>();
     private AdditionalInformation additionalInformation;
 
-    public Account(String username, String password, String name) {
+    public Account(String username, String password, String name, BCryptEncoderForAccountPassword encoder) {
         this.id = new AccountId();
         this.username = new AccountUsername(username);
-        this.password = new AccountPassword(password);
+        this.password = new AccountPassword(password, encoder);
         this.accountName = new AccountName(name);
     }
+
+    public Account() {}
 
     public Account subscribeOnUser(Account user) {
         if (this.friends.contains(user)) {
@@ -58,9 +61,9 @@ public class Account {
         return this;
     }
 
-    public Account changeAccountPassword(String oldPassword, String newPassword) {
-        var oldAccountPassword = new AccountPassword(oldPassword);
-        var newAccountPassword = new AccountPassword(newPassword);
+    public Account changeAccountPassword(String oldPassword, String newPassword, BCryptEncoderForAccountPassword encoder) {
+        var oldAccountPassword = new AccountPassword(oldPassword, encoder);
+        var newAccountPassword = new AccountPassword(newPassword, encoder);
         if(!oldAccountPassword.getValue().equals(this.password.getValue())) {
             throw new IllegalArgumentException("Passwords do not match");
         }
@@ -84,11 +87,11 @@ public class Account {
         return accountName.getValue();
     }
 
-    public List<Account> getFriends() {
+    public List<Account> getAccountFriends() {
         return friends;
     }
 
-    public List<Account> getSubscribers() {
+    public List<Account> getAccountSubscribers() {
         return subscribers;
     }
 

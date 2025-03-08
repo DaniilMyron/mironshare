@@ -4,6 +4,6 @@ import com.miron.profileservice.domain.entity.Account;
 
 import java.util.UUID;
 
-public interface RetrieveUser {
-    Account execute(UUID id);
+public interface RetrieveUser<T extends Account>{
+    T execute(UUID id);
 }
