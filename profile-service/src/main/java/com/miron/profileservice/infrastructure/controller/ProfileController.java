@@ -3,6 +3,7 @@ package com.miron.profileservice.infrastructure.controller;
 import com.miron.profileservice.domain.api.AccountService;
 import com.miron.profileservice.domain.entity.Account;
 import com.miron.profileservice.infrastructure.controller.model.*;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,9 @@ public class ProfileController {
     }
 
     @GetMapping("/retrieve-profiles")
-    public ResponseEntity<List<AccountResponse>> retrieveProfiles(@RequestBody AccountsRequest accountsRequest) {
+    public ResponseEntity<List<AccountResponse>> retrieveProfiles(HttpEntity<String> httpEntity){
+        System.out.println(httpEntity.getBody());
+        AccountsRequest accountsRequest = new AccountsRequest(httpEntity.getBody());
         var accounts = accountService.retrieveUsers(accountsRequest.getUsersId());
         var response = accounts.stream()
                 .map(AccountResponse::new)

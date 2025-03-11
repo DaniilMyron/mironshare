@@ -35,10 +35,10 @@ public class AccountUseCasesManagement<T extends Account> implements AccountServ
     }
 
     @Override
-    public List<T> retrieveUsers(String[] usersId) {
+    public List<T> retrieveUsers(List<UUID> usersId) {
         List<T> accounts = new ArrayList<>();
-        for (int i = 0; i < usersId.length; i++) {
-            accounts.add(retrieveAccountUseCase.execute(UUID.fromString(usersId[i])));
+        for (int i = 0; i < usersId.size(); i++) {
+            accounts.add(retrieveAccountUseCase.execute(usersId.get(i)));
         }
         return accounts;
     }

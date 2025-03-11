@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface AccountJpaRepository extends AccountRepository<AccountEntity>, JpaRepository<AccountEntity, UUID> {
-}
+//public interface AccountJpaRepository extends AccountRepository<AccountEntity>, JpaRepository<AccountEntity, UUID> {
+//}

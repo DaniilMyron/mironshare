@@ -1,12 +1,17 @@
 package com.miron.profileservice.infrastructure.controller.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class AccountsRequest {
-    private String[] usersId;
-    public AccountsRequest(String... usersId) {
-        this.usersId = usersId;
+    private List<UUID> usersId = new ArrayList<>();
+    private ArrayRequestMapper arrayRequestMapper = new ArrayRequestMapper(usersId);
+    public AccountsRequest(String httpBody) {
+        arrayRequestMapper.mapStringToList(httpBody);
     }
 
-    public String[] getUsersId() {
+    public List<UUID> getUsersId() {
         return usersId;
     }
 }

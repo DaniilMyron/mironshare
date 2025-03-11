@@ -21,6 +21,9 @@ public class AccountResponse{
         }
     }
 
+    public AccountResponse() {
+    }
+
     public String getAccountUsername() {
         return accountUsername;
     }
