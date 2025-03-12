@@ -1,8 +1,4 @@
-package com.miron.profileservice.infrastructure.controller.model;
-
-import lombok.SneakyThrows;
-import org.apache.tomcat.util.json.JSONParser;
-import org.apache.tomcat.util.json.ParseException;
+package com.miron.profileservice.infrastructure.controller.dto;
 
 import java.util.List;
 import java.util.UUID;

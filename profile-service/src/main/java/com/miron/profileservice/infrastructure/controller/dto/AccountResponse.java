@@ -1,4 +1,4 @@
-package com.miron.profileservice.infrastructure.controller.model;
+package com.miron.profileservice.infrastructure.controller.dto;
 
 import com.miron.profileservice.domain.entity.Account;
 

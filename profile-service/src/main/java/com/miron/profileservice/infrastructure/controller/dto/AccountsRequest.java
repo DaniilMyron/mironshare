@@ -1,4 +1,4 @@
-package com.miron.profileservice.infrastructure.controller.model;
+package com.miron.profileservice.infrastructure.controller.dto;
 
 import java.util.ArrayList;
 import java.util.List;
